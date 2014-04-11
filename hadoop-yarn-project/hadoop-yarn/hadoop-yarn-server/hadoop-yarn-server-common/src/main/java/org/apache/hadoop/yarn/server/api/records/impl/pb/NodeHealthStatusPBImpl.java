@@ -94,7 +94,20 @@ public class NodeHealthStatusPBImpl extends NodeHealthStatus {
     maybeInitBuilder();
     this.builder.setIsNodeHealthy(isNodeHealthy);
   }
-
+  
+  /*
+   * Add by ME
+   * 
+   * */
+  @Override
+  public boolean getIsNodeTrusted(){
+	  return false;
+  }
+  
+  @Override
+  public void setIsNodeTrusted(boolean isNodeTrusted){
+	  
+  }
   @Override
   public String getHealthReport() {
     NodeHealthStatusProtoOrBuilder p =

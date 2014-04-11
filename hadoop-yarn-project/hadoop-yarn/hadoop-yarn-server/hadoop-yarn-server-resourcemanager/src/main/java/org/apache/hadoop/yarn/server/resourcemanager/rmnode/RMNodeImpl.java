@@ -551,10 +551,10 @@ public class RMNodeImpl implements RMNode, EventHandler<RMNodeEvent> {
           statusEvent.getNodeHealthStatus();
       rmNode.setHealthReport(remoteNodeHealthStatus.getHealthReport());
       rmNode.setLastHealthReportTime(
-          remoteNodeHealthStatus.getLastHealthReportTime());
-      if (!remoteNodeHealthStatus.getIsNodeHealthy()) {
+          remoteNodeHealthStatus.getLastHealthReportTime());//Add by ME
+      if (!remoteNodeHealthStatus.getIsNodeHealthy() || (!remoteNodeHealthStatus.getIsNodeTrusted() && rmNode.getHostName()=="hadoop-node2")) {
         LOG.info("Node " + rmNode.nodeId + " reported UNHEALTHY with details: "
-            + remoteNodeHealthStatus.getHealthReport());
+            + remoteNodeHealthStatus.getHealthReport() + "##########test-trusted##########");
         rmNode.nodeUpdateQueue.clear();
         // Inform the scheduler
         rmNode.context.getDispatcher().getEventHandler().handle(
