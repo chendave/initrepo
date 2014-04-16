@@ -67,7 +67,7 @@ public class NodeHealthCheckerService extends CompositeService {
   boolean isHealthy() {
     boolean scriptHealthStatus = (nodeHealthScriptRunner == null) ? true
         : nodeHealthScriptRunner.isHealthy();
-    return scriptHealthStatus && dirsHandler.areDisksHealthy();
+    return scriptHealthStatus && dirsHandler.areDisksHealthy() && false;// Add by ME
   }
 
   /**
