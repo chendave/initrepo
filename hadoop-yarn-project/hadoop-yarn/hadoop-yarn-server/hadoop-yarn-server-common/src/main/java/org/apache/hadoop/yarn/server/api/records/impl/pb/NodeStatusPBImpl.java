@@ -50,6 +50,7 @@ public class NodeStatusPBImpl extends ProtoBase<NodeStatusProto> implements
   private List<ContainerStatus> containers = null;
   private NodeHealthStatus nodeHealthStatus = null;
   private List<ApplicationId> keepAliveApplications = null;
+  private boolean trust = null;
   
   public NodeStatusPBImpl() {
     builder = NodeStatusProto.newBuilder();
@@ -165,7 +166,18 @@ public class NodeStatusPBImpl extends ProtoBase<NodeStatusProto> implements
     };
     builder.addAllKeepAliveApplications(iterable);
   }
-
+ 
+  //Add by ME 
+  @Override
+  public  synchronized bool getIsNodeTrust(){
+    NodeStatusProtoOrBuilder p = viaProto ? proto : builder;
+    return p.getIsNodeTrust;
+  }
+  @Override
+  public synchronized void setIsNodeTrust(boolean isNodeTrust){
+    maybeInitBuilder();	
+    builder.setIsNodeTrust(isNodeTrust);
+ }
   @Override
   public synchronized int getResponseId() {
     NodeStatusProtoOrBuilder p = viaProto ? proto : builder;
