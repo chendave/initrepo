@@ -28,6 +28,10 @@ public interface NodeStatus {
   
   public abstract NodeId getNodeId();
   public abstract int getResponseId();
+
+ //Add by ME
+  public abstract void setIsNodeTrust();
+  public abstract boolean getIsNodeTrust();
   
   public abstract List<ContainerStatus> getContainersStatuses();
   public abstract void setContainersStatuses(
