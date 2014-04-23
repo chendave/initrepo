@@ -30,7 +30,7 @@ public interface NodeStatus {
   public abstract int getResponseId();
 
  //Add by ME
-  public abstract void setIsNodeTrust();
+  public abstract void setIsNodeTrust(boolean isNodeTrust);
   public abstract boolean getIsNodeTrust();
   
   public abstract List<ContainerStatus> getContainersStatuses();

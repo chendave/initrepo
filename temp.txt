@@ -1,0 +1,373 @@
+./hadoop-common-project/hadoop-common/CHANGES.txt:    non-existent filesystems are healthy.  (Milind Bhandarkar via cutting)
+./hadoop-common-project/hadoop-common/dev-support/jdiff/hadoop_0.18.1.xml:      <![CDATA[Check if all the data directories are healthy
+./hadoop-common-project/hadoop-common/dev-support/jdiff/hadoop_0.18.1.xml:    <method name="isHealthy" return="boolean"
+./hadoop-common-project/hadoop-common/dev-support/jdiff/hadoop_0.18.1.xml:      <![CDATA[DFS is considered healthy if there are no missing blocks.]]>
+./hadoop-common-project/hadoop-common/dev-support/jdiff/hadoop_0.17.0.xml:      <![CDATA[Check if all the data directories are healthy
+./hadoop-common-project/hadoop-common/dev-support/jdiff/hadoop_0.17.0.xml:    <method name="isHealthy" return="boolean"
+./hadoop-common-project/hadoop-common/dev-support/jdiff/hadoop_0.17.0.xml:      <![CDATA[DFS is considered healthy if there are no missing blocks.]]>
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestHealthMonitor.java:    svc.isHealthy = false;
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestHealthMonitor.java:    LOG.info("Returning to healthy state, waiting for HEALTHY");
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestHealthMonitor.java:    svc.isHealthy = true;
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestHealthMonitor.java:    LOG.info("Returning to healthy state, waiting for HEALTHY");
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestHealthMonitor.java:    svc.isHealthy = false;
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestZKFailoverController.java:      LOG.info("Faking svc0 unhealthy, should failover to svc1");
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestZKFailoverController.java:      cluster.setHealthy(0, false);
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestZKFailoverController.java:      LOG.info("Allowing svc0 to be healthy again, making svc1 unreachable " +
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestZKFailoverController.java:      cluster.setHealthy(0, true);
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestZKFailoverController.java:   * Test that, if the standby node is unhealthy, it doesn't try to become
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestZKFailoverController.java:  public void testDontFailoverToUnhealthyNode() throws Exception {
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestZKFailoverController.java:      // Make svc1 unhealthy, and wait for its FC to notice the bad health.
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestZKFailoverController.java:      cluster.setHealthy(1, false);
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestZKFailoverController.java:      LOG.info("Faking svc0 unhealthy, should NOT successfully " +
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestZKFailoverController.java:      cluster.setHealthy(0, false);
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestZKFailoverController.java:      LOG.info("Faking svc0 healthy again, should go back to svc0");
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestZKFailoverController.java:      cluster.setHealthy(0, true);
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestZKFailoverController.java:  public void testGracefulFailoverToUnhealthy() throws Exception {
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestZKFailoverController.java:      // Mark it unhealthy, wait for it to exit election
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestZKFailoverController.java:      cluster.setHealthy(1, false);
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestZKFailoverController.java:      // Ask for failover, it should fail, because it's unhealthy
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestZKFailoverController.java:        fail("Did not fail to graceful failover to unhealthy service!");
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestZKFailoverController.java:            " is not currently healthy.", sfe);
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestZKFailoverController.java:      cluster.setHealthy(0, false);
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestZKFailoverController.java:      cluster.setHealthy(1, true);
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestZKFailoverController.java:      cluster.setHealthy(0, false);
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestZKFailoverController.java:      cluster.setHealthy(0, true);
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/DummyHAService.java:  boolean isHealthy = true;
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/DummyHAService.java:      if (!isHealthy) {
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/DummyHAService.java:        throw new HealthCheckFailedException("not healthy");
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/MiniZKFCCluster.java:  public void setHealthy(int idx, boolean healthy) {
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/MiniZKFCCluster.java:    svcs[idx].isHealthy = healthy;
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestActiveStandbyElector.java:  public void testBecomeActiveBeforeServiceHealthy() throws Exception {
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestFailoverController.java:  public void testFailoverToUnhealthyServiceFailsAndFailsback() throws Exception {
+./hadoop-common-project/hadoop-common/src/test/java/org/apache/hadoop/ha/TestFailoverController.java:      fail("Failover to unhealthy service");
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/ZKFailoverController.java:   * service becomes unhealthy 
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/ZKFailoverController.java:      // unhealthy state could prevent us from ever attempting to
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/ZKFailoverController.java:          // early out if service became unhealthy
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/ZKFailoverController.java:   * will rejoin iff it is healthy.
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/ZKFailoverController.java:   * 1) Pre-flight checks: ensure that the local node is healthy, and
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/ZKFailoverController.java:   * we either become unhealthy or we see an election attempt recorded by
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/ZKFailoverController.java:            "Service became unhealthy while trying to failover.");          
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/ZKFailoverController.java:   * Ensure that the local node is in a healthy state, and thus
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/ZKFailoverController.java:   * @throws ServiceFailedException if the node is unhealthy
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/ZKFailoverController.java:          localTarget + " is not currently healthy. " +
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/ZKFailoverController.java:        boolean healthy = lastHealthState == State.SERVICE_HEALTHY;
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/ZKFailoverController.java:          if (healthy) {
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/ActiveStandbyElector.java:            "reported as healthy.");
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/ZKFCProtocol.java:   * the election, provided that its service is healthy.
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/ZKFCProtocol.java:   * it is healthy.
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/ZKFCProtocol.java:   * If the node is not healthy, it will throw an exception indicating that it
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/ZKFCProtocol.java:   * If the node is healthy and not active, it will try to initiate a graceful
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/HealthMonitor.java:     * The service is connected and healthy.
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/HealthMonitor.java:     * The service is running but unhealthy.
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/HealthMonitor.java:   * state is healthy, the service may have gone down in the meantime.
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/HealthMonitor.java:      boolean healthy = false;
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/HealthMonitor.java:        healthy = true;
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/HealthMonitor.java:      if (healthy) {
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/HAServiceProtocol.java:   * If the service is not healthy due to failure or partial failure,
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/HAServiceProtocol.java:   * The definition of service not healthy is left to the service.
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/FailoverController.java:   * to it being inaccessible, already active, not healthy, etc).
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/FailoverController.java:          "Can't failover to an unhealthy service", hce);
+./hadoop-common-project/hadoop-common/src/main/java/org/apache/hadoop/ha/HAAdmin.java:        // is not healthy, then its ZKFC will immediately quit the election
+./hadoop-common-project/hadoop-common/src/main/docs/releasenotes.html:     <b>Node resource is added twice when node comes back from unhealthy to healthy</b><br>
+./hadoop-common-project/hadoop-common/src/main/docs/releasenotes.html:     <blockquote>When an unhealthy restarts, its resource maybe added twice in scheduler.
+./hadoop-common-project/hadoop-common/src/main/docs/releasenotes.html:     <b>RM web services ClusterMetricsInfo total nodes doesn't include unhealthy nodes</b><br>
+./hadoop-common-project/hadoop-common/src/main/docs/releasenotes.html:     <blockquote>In the web services api for the cluster/metrics, the totalNodes reported doesn't include the unhealthy nodes.
+./hadoop-common-project/hadoop-common/src/main/docs/releasenotes.html:     <blockquote>The NodeReport returned by getClusterNodes or given to AMs in heartbeat responses includes both a NodeState (enum) and a NodeHealthStatus (object).  As UNHEALTHY is already NodeState, a separate NodeHealthStatus doesn't seem necessary.  I propose eliminating NodeHealthStatus#getIsNodeHealthy and moving its two other methods, getHealthReport and getLastHealthReportTime, into NodeReport.</blockquote></li>
+./hadoop-common-project/hadoop-common/src/main/docs/releasenotes.html:     <blockquote>The code behind the /nodes RM REST API is unnecessarily muddled, logs the same misspelled INFO message repeatedly, and does not return unhealthy nodes, even when asked.</blockquote></li>
+./hadoop-common-project/hadoop-common/src/main/docs/releasenotes.html:        Health-Status(isNodeHealthy) : true
+./hadoop-common-project/hadoop-common/src/main/docs/releasenotes.html:    nodeHealthStatus.setIsNodeHealthy(healthChecker.isHealthy());
+./hadoop-common-project/hadoop-common/src/main/docs/releasenotes.html:      LOG.debug("Node's health-status : " + nodeHealthStatus.getIsNodeHealthy()
+./hadoop-common-project/hadoop-common/src/main/docs/releasenotes.html:     <blockquote>Add a utility method HdfsUtils.isHealthy(uri) for checking if the given HDFS is healthy.</blockquote></li>
+./hadoop-common-project/hadoop-common/src/main/docs/releasenotes.html:     <b>Need a RM-&gt;AM channel to inform AMs about faulty/unhealthy/lost nodes</b><br>
+./hadoop-common-project/hadoop-common/src/main/docs/releasenotes.html:     <blockquote>Changed active nodes list to not contain unhealthy nodes on the webUI and metrics.</blockquote></li>
+./hadoop-common-project/hadoop-common/src/main/docs/releasenotes.html:     <b>ClassCastException thrown in -list-active-trackers when there are a few unhealthy nodes</b><br>
+./hadoop-common-project/hadoop-common/src/main/docs/releasenotes.html:     <b>Health Report on Resource Manager UI is null if the NM's are all healthy.</b><br>
+./hadoop-common-project/hadoop-common/src/site/apt/ClusterSetup.apt.vm:    determine if a node is healthy or not.
+./hadoop-common-project/hadoop-common/src/site/apt/ClusterSetup.apt.vm:    Administrators can determine if the node is in a healthy state by
+./hadoop-common-project/hadoop-common/src/site/apt/ClusterSetup.apt.vm:    detects the node to be in an unhealthy state, it must print a line to
+./hadoop-common-project/hadoop-common/src/site/apt/ClusterSetup.apt.vm:    reported as <<<unhealthy>>> and the node is black-listed by the
+./hadoop-common-project/hadoop-common/src/site/apt/ClusterSetup.apt.vm:    node becomes healthy again, it will be removed from the blacklisted nodes
+./hadoop-common-project/hadoop-common/src/site/apt/ClusterSetup.apt.vm:    output of the script, if it is unhealthy, is available to the
+./hadoop-common-project/hadoop-common/src/site/apt/ClusterSetup.apt.vm:    node was healthy is also displayed on the web interface.
+./hadoop-common-project/hadoop-common/src/site/apt/ClusterSetup.apt.vm:  yarn.nodemanager.disk-health-checker.min-healthy-disks, the whole node is
+./hadoop-common-project/hadoop-common/src/site/apt/ClusterSetup.apt.vm:  marked unhealthy and this info is sent to resource manager also. The boot
+./hadoop-hdfs-project/hadoop-hdfs-httpfs/src/main/java/org/apache/hadoop/lib/service/FileSystemAccessException.java:    H07("[{0}] not healthy, {1}"),
+./hadoop-hdfs-project/hadoop-hdfs/CHANGES.txt:    HDFS-3518. Add a utility method HdfsUtils.isHealthy(uri) for checking if
+./hadoop-hdfs-project/hadoop-hdfs/CHANGES.txt:    the given HDFS is healthy. (szetszwo)
+./hadoop-hdfs-project/hadoop-hdfs/dev-support/jdiff/hadoop-hdfs_0.20.0.xml:      <![CDATA[check if a data directory is healthy
+./hadoop-hdfs-project/hadoop-hdfs/dev-support/jdiff/hadoop-hdfs_0.20.0.xml:      <![CDATA[Check if all the data directories are healthy
+./hadoop-hdfs-project/hadoop-hdfs/dev-support/jdiff/hadoop-hdfs_0.20.0.xml:    <method name="isHealthy" return="boolean"
+./hadoop-hdfs-project/hadoop-hdfs/dev-support/jdiff/hadoop-hdfs_0.20.0.xml:      <![CDATA[DFS is considered healthy if there are no missing blocks.]]>
+./hadoop-hdfs-project/hadoop-hdfs/dev-support/jdiff/hadoop-hdfs_0.21.0.xml:      <![CDATA[check if a data directory is healthy
+./hadoop-hdfs-project/hadoop-hdfs/dev-support/jdiff/hadoop-hdfs_0.21.0.xml:      <![CDATA[Check if all the data directories are healthy
+./hadoop-hdfs-project/hadoop-hdfs/dev-support/jdiff/hadoop-hdfs_0.22.0.xml:      <![CDATA[check if a data directory is healthy
+./hadoop-hdfs-project/hadoop-hdfs/dev-support/jdiff/hadoop-hdfs_0.22.0.xml:      <![CDATA[Check if all the data directories are healthy
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/TestClientReportBadBlock.java:    // Make sure filesystem is in healthy state
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/TestDatanodeBlockScanner.java:   *    Re-replciation brings the block back to healthy state
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/server/datanode/TestDataNodeVolumeFailureReporting.java:    // third healthy so one node in the pipeline will not fail). 
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/server/blockmanagement/TestReplicationPolicy.java:   * and when the number of replicas is less or equal to 3, all the healthy
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/server/blockmanagement/TestReplicationPolicy.java:      // Step 3. Set 2 stale datanodes back to healthy nodes, 
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/server/namenode/ha/TestNNHealthCheck.java:      // Should not throw error, which indicates healthy.
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/server/namenode/ha/TestNNHealthCheck.java:        // Should throw error - NN is unhealthy.
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/server/namenode/TestFsck.java:      // Check to make sure we have a healthy filesystem
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/server/namenode/TestFsck.java:      // Check to make sure we have healthy filesystem
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/server/namenode/TestFsck.java:    // Make sure filesystem is in healthy state
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/server/namenode/TestCorruptFilesJsp.java:      assertTrue("Corrupt files page is not showing a healthy filesystem",
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/server/namenode/TestStorageRestore.java:   * 6. check there is only one healthy storage dir
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/server/namenode/TestStorageRestore.java:   * 8. check there is still only one healthy storage dir
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/server/namenode/TestStorageRestore.java:   * 10.verify there are 3 healthy storage dirs.
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/TestDFSClientRetries.java:      assertTrue(HdfsUtils.isHealthy(uri));
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/TestDFSClientRetries.java:      assertTrue(HdfsUtils.isHealthy(uri));
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/TestDFSClientRetries.java:      assertFalse(HdfsUtils.isHealthy(uri));
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/TestDFSClientRetries.java:            assertFalse(HdfsUtils.isHealthy(uri));
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/TestDFSClientRetries.java:            assertTrue(HdfsUtils.isHealthy(uri));
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/TestDFSClientRetries.java:      assertTrue(HdfsUtils.isHealthy(uri));
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/TestDFSClientRetries.java:      assertFalse(HdfsUtils.isHealthy(uri));
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/TestDFSClientRetries.java:            assertFalse(HdfsUtils.isHealthy(uri));
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/TestDFSClientRetries.java:            assertTrue(HdfsUtils.isHealthy(uri));
+./hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/TestDFSClientRetries.java:      assertTrue(HdfsUtils.isHealthy(uri));
+./hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/client/HdfsUtils.java:   * Is the HDFS healthy?
+./hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/client/HdfsUtils.java:   * HDFS is considered as healthy if it is up and not in safemode.
+./hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/client/HdfsUtils.java:   * @return true if HDFS is healthy; false, otherwise.
+./hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/client/HdfsUtils.java:  public static boolean isHealthy(URI uri) {
+./hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/datanode/fsdataset/impl/LDir.java:   * check if a data diretory is healthy
+./hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/datanode/fsdataset/impl/FsDatasetImpl.java:   * check if a data directory is healthy
+./hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/datanode/fsdataset/FsDatasetSpi.java:     * Check if all the data directories are healthy
+./hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/namenode/NamenodeFsck.java:        if (res.isHealthy()) {
+./hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/namenode/NamenodeFsck.java:     * DFS is considered healthy if there are no missing blocks.
+./hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/namenode/NamenodeFsck.java:    boolean isHealthy() {
+./hadoop-hdfs-project/hadoop-hdfs/src/main/java/org/apache/hadoop/hdfs/server/namenode/NamenodeFsck.java:      res.append("Status: ").append((isHealthy() ? "HEALTHY" : "CORRUPT"))
+./hadoop-mapreduce-project/CHANGES.txt:    MAPREDUCE-3760. Changed active nodes list to not contain unhealthy nodes
+./hadoop-mapreduce-project/CHANGES.txt:    there are a few unhealthy nodes (vinodkv via mahadev)
+./hadoop-mapreduce-project/CHANGES.txt:    tasktracker nodes and blacklist nodes if they are unhealthy.
+./hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-core/src/main/java/org/apache/hadoop/mapreduce/task/reduce/ShuffleSchedulerImpl.java:    boolean reducerHealthy =
+./hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-core/src/main/java/org/apache/hadoop/mapreduce/task/reduce/ShuffleSchedulerImpl.java:    // kill if not healthy and has insufficient progress
+./hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-core/src/main/java/org/apache/hadoop/mapreduce/task/reduce/ShuffleSchedulerImpl.java:        && !reducerHealthy
+./hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-core/src/main/resources/mapred-default.xml:               (after a day). The tracker will become a healthy
+./hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-core/src/main/resources/mapred-default.xml:  the node is healthy or not. If the value of this key is empty or the
+./hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-hs/src/test/resources/job_1329348432655_0001_conf.xml:<property><!--Loaded from job.xml--><name>yarn.nodemanager.disk-health-checker.min-healthy-disks</name><value>0.25</value></property>
+./hadoop-yarn-project/CHANGES.txt:    YARN-876. Node resource is added twice when node comes back from unhealthy
+./hadoop-yarn-project/CHANGES.txt:    to healthy. (Peng Zhang via Sandy Ryza)
+./hadoop-yarn-project/CHANGES.txt:    unhealthy nodes (Jonathan Eagles via tgraves)
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-api/src/main/java/org/apache/hadoop/yarn/api/records/NodeState.java:  /** Node is unhealthy */
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-api/src/main/java/org/apache/hadoop/yarn/conf/YarnConfiguration.java:   * The minimum fraction of number of disks to be healthy for the nodemanager
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-api/src/main/java/org/apache/hadoop/yarn/conf/YarnConfiguration.java:    NM_PREFIX + "disk-health-checker.min-healthy-disks";
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-api/src/main/java/org/apache/hadoop/yarn/conf/YarnConfiguration.java:   * By default, at least 5% of disks are to be healthy to say that the node
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-api/src/main/java/org/apache/hadoop/yarn/conf/YarnConfiguration.java:   * is healthy in terms of disks.
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-common/src/main/resources/yarn-default.xml:    <description>The minimum fraction of number of disks to be healthy for the
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-common/src/main/resources/yarn-default.xml:    are less number of healthy local-dirs (or log-dirs) available, then
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-common/src/main/resources/yarn-default.xml:    <name>yarn.nodemanager.disk-health-checker.min-healthy-disks</name>
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/src/main/java/org/apache/hadoop/yarn/server/api/records/NodeHealthStatus.java: *       An indicator of whether the node is healthy, as determined by the 
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/src/main/java/org/apache/hadoop/yarn/server/api/records/NodeHealthStatus.java:  public static NodeHealthStatus newInstance(boolean isNodeHealthy,
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/src/main/java/org/apache/hadoop/yarn/server/api/records/NodeHealthStatus.java:    status.setIsNodeHealthy(isNodeHealthy);
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/src/main/java/org/apache/hadoop/yarn/server/api/records/NodeHealthStatus.java:   * Is the node healthy?
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/src/main/java/org/apache/hadoop/yarn/server/api/records/NodeHealthStatus.java:   * @return <code>true</code> if the node is healthy, else <code>false</code>
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/src/main/java/org/apache/hadoop/yarn/server/api/records/NodeHealthStatus.java:  public abstract boolean getIsNodeHealthy();
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/src/main/java/org/apache/hadoop/yarn/server/api/records/NodeHealthStatus.java:  public abstract void setIsNodeHealthy(boolean isNodeHealthy);
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/src/main/java/org/apache/hadoop/yarn/server/api/records/impl/pb/NodeHealthStatusPBImpl.java:  public boolean getIsNodeHealthy() {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/src/main/java/org/apache/hadoop/yarn/server/api/records/impl/pb/NodeHealthStatusPBImpl.java:    return p.getIsNodeHealthy();
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/src/main/java/org/apache/hadoop/yarn/server/api/records/impl/pb/NodeHealthStatusPBImpl.java:  public void setIsNodeHealthy(boolean isNodeHealthy) {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/src/main/java/org/apache/hadoop/yarn/server/api/records/impl/pb/NodeHealthStatusPBImpl.java:    this.builder.setIsNodeHealthy(isNodeHealthy);
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/src/main/proto/yarn_server_common_protos.proto:  optional bool is_node_healthy = 1;
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/webapp/TestNMWebServices.java:          WebServicesTestUtils.getXmlBoolean(element, "nodeHealthy"),
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/webapp/TestNMWebServices.java:        info.getLong("lastNodeUpdateTime"), info.getBoolean("nodeHealthy"),
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/webapp/TestNMWebServices.java:      long lastNodeUpdateTime, Boolean nodeHealthy, String nodeHostName,
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/webapp/TestNMWebServices.java:    WebServicesTestUtils.checkStringMatch("healthReport", "Healthy",
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/webapp/TestNMWebServices.java:    assertTrue("nodeHealthy isn't true", nodeHealthy);
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:  private void setHealthStatus(NodeHealthStatus healthStatus, boolean isHealthy,
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:    healthStatus.setIsNodeHealthy(isHealthy);
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:    String errorScript = "echo ERROR\n echo \"Tracker not healthy\"";
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:    setHealthStatus(healthStatus, nodeHealthChecker.isHealthy(),
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:    LOG.info("Checking initial healthy condition");
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:    Assert.assertTrue("Node health status reported unhealthy", healthStatus
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:        .getIsNodeHealthy());
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:    Assert.assertTrue("Node health status reported unhealthy", healthStatus
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:    // Healthy to unhealthy transition
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:    setHealthStatus(healthStatus, nodeHealthChecker.isHealthy(),
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:    LOG.info("Checking Healthy--->Unhealthy");
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:    Assert.assertFalse("Node health status reported healthy", healthStatus
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:        .getIsNodeHealthy());
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:    Assert.assertTrue("Node health status reported healthy", healthStatus
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:    // Check unhealthy to healthy transitions.
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:    setHealthStatus(healthStatus, nodeHealthChecker.isHealthy(),
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:    LOG.info("Checking UnHealthy--->healthy");
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:    Assert.assertTrue("Node health status reported unhealthy", healthStatus
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:        .getIsNodeHealthy());
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:    Assert.assertTrue("Node health status reported unhealthy", healthStatus
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:    // Healthy to timeout transition.
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:    setHealthStatus(healthStatus, nodeHealthChecker.isHealthy(),
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:    LOG.info("Checking Healthy--->timeout");
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:    Assert.assertFalse("Node health status reported healthy even after timeout",
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/TestNodeHealthService.java:        healthStatus.getIsNodeHealthy());
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/webapp/dao/NodeInfo.java:  protected boolean nodeHealthy;
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/webapp/dao/NodeInfo.java:    this.nodeHealthy = context.getNodeHealthStatus().getIsNodeHealthy();
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/webapp/dao/NodeInfo.java:    return this.nodeHealthy;
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/webapp/NodePage.java:          ._("NodeHealthyStatus",
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeHealthCheckerService.java:   * @return <em>true</em> if the node is healthy
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeHealthCheckerService.java:  boolean isHealthy() {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeHealthCheckerService.java:        : nodeHealthScriptRunner.isHealthy();
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeHealthCheckerService.java:    return scriptHealthStatus && dirsHandler.areDisksHealthy() && false;// Add by ME
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/containermanager/launcher/ContainerLaunch.java:      if (!dirsHandler.areDisksHealthy()) {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/containermanager/localizer/ResourceLocalizationService.java:        if (dirsHandler.areDisksHealthy()) {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeStatusUpdaterImpl.java:    nodeHealthStatus.setIsNodeHealthy(healthChecker.isHealthy());
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeStatusUpdaterImpl.java:      LOG.debug("Node's health-status : " + nodeHealthStatus.getIsNodeHealthy()
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeManager.java:      this.nodeHealthStatus.setIsNodeHealthy(true);
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeManager.java:      this.nodeHealthStatus.setHealthReport("Healthy");
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/LocalDirsHandlerService.java:   * Minimum fraction of disks to be healthy for the node to be healthy in
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/LocalDirsHandlerService.java:  private float minNeededHealthyDisksFactor;
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/LocalDirsHandlerService.java:    minNeededHealthyDisksFactor = conf.getFloat(
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/LocalDirsHandlerService.java:   * The minimum fraction of number of disks needed to be healthy for a node to
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/LocalDirsHandlerService.java:   * be considered healthy in terms of disks is configured using
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/LocalDirsHandlerService.java:  public boolean areDisksHealthy() {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/LocalDirsHandlerService.java:    if (goodDirs/(float)totalConfiguredDirs < minNeededHealthyDisksFactor) {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/LocalDirsHandlerService.java:      return false; // Not enough healthy local-dirs
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/LocalDirsHandlerService.java:    if (goodDirs/(float)totalConfiguredDirs < minNeededHealthyDisksFactor) {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/LocalDirsHandlerService.java:      return false; // Not enough healthy log-dirs
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/LocalDirsHandlerService.java:    if (!areDisksHealthy()) {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeHealthScriptRunner.java:  private boolean isHealthy;
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeHealthScriptRunner.java:     * The node is marked unhealthy if
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeHealthScriptRunner.java:     * output is ignored and node is left remaining healthy, as script might
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeHealthScriptRunner.java:    this.isHealthy = true;
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeHealthScriptRunner.java:   * Gets the if the node is healthy or not
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeHealthScriptRunner.java:   * @return true if node is healthy
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeHealthScriptRunner.java:  public boolean isHealthy() {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeHealthScriptRunner.java:    return isHealthy;
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeHealthScriptRunner.java:   * @param isHealthy
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeHealthScriptRunner.java:   *          if or not node is healthy
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeHealthScriptRunner.java:  private synchronized void setHealthy(boolean isHealthy) {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeHealthScriptRunner.java:    this.isHealthy = isHealthy;
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeHealthScriptRunner.java:   * Returns output from health script. if node is healthy then an empty string
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeHealthScriptRunner.java:  private synchronized void setHealthStatus(boolean isHealthy, String output) {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeHealthScriptRunner.java:    this.setHealthy(isHealthy);
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeHealthScriptRunner.java:  private synchronized void setHealthStatus(boolean isHealthy, String output,
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/main/java/org/apache/hadoop/yarn/server/nodemanager/NodeHealthScriptRunner.java:    this.setHealthStatus(isHealthy, output);
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/webapp/TestRMWebServicesNodes.java:  public void testNodesDefaultWithUnHealthyNode() throws JSONException,
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/webapp/TestRMWebServicesNodes.java:    // 3 nodes, including the unhealthy node and the new node.
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/webapp/TestRMWebServicesNodes.java:  public void testNodesQueryHealthyFalse() throws JSONException, Exception {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/webapp/TestRMWebServices.java:    clusterMetrics.incrNumUnhealthyNMs();
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/webapp/TestRMWebServices.java:          WebServicesTestUtils.getXmlInt(element, "unhealthyNodes"),
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/webapp/TestRMWebServices.java:        clusterinfo.getInt("lostNodes"), clusterinfo.getInt("unhealthyNodes"),
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/webapp/TestRMWebServices.java:      int lostNodes, int unhealthyNodes, int decommissionedNodes,
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/webapp/TestRMWebServices.java:            + clusterMetrics.getUnhealthyNMs(), totalNodes);
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/webapp/TestRMWebServices.java:    assertEquals("unhealthyNodes doesn't match",
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/webapp/TestRMWebServices.java:        clusterMetrics.getUnhealthyNMs(), unhealthyNodes);
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/webapp/TestRMWebApp.java:    // Unhealthy nodes
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestRMNodeTransitions.java:    doReturn(yes).when(healthStatus).getIsNodeHealthy();
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestRMNodeTransitions.java:  public void testUnhealthyExpire() {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestRMNodeTransitions.java:    RMNodeImpl node = getUnhealthyNode();
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestRMNodeTransitions.java:    int initialUnhealthy = cm.getUnhealthyNMs();
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestRMNodeTransitions.java:    Assert.assertEquals("Unhealthy Nodes",
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestRMNodeTransitions.java:        initialUnhealthy - 1, cm.getUnhealthyNMs());
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestRMNodeTransitions.java:  public void testUnhealthyExpireForSchedulerRemove() {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestRMNodeTransitions.java:    RMNodeImpl node = getUnhealthyNode();
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestRMNodeTransitions.java:  public void testUnhealthyDecommission() {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestRMNodeTransitions.java:    RMNodeImpl node = getUnhealthyNode();
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestRMNodeTransitions.java:    int initialUnhealthy = cm.getUnhealthyNMs();
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestRMNodeTransitions.java:    Assert.assertEquals("Unhealthy Nodes",
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestRMNodeTransitions.java:        initialUnhealthy - 1, cm.getUnhealthyNMs());
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestRMNodeTransitions.java:  public void testUnhealthyRebooting() {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestRMNodeTransitions.java:    RMNodeImpl node = getUnhealthyNode();
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestRMNodeTransitions.java:    int initialUnhealthy = cm.getUnhealthyNMs();
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestRMNodeTransitions.java:    Assert.assertEquals("Unhealthy Nodes",
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestRMNodeTransitions.java:        initialUnhealthy - 1, cm.getUnhealthyNMs());
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestRMNodeTransitions.java:  private RMNodeImpl getUnhealthyNode() {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/MockNM.java:  public NodeHeartbeatResponse nodeHeartbeat(boolean isHealthy) throws Exception {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/MockNM.java:        isHealthy, ++responseId);
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/MockNM.java:      List<ContainerStatus>> conts, boolean isHealthy) throws Exception {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/MockNM.java:    return nodeHeartbeat(conts, isHealthy, ++responseId);
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/MockNM.java:      List<ContainerStatus>> conts, boolean isHealthy, int resId) throws Exception {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/MockNM.java:    healthStatus.setIsNodeHealthy(isHealthy);
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestClientRMService.java:    // Add a healthy node
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestClientRMService.java:    Assert.assertNotSame("Node is expected to be healthy!", NodeState.UNHEALTHY,
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestClientRMService.java:    // Now make the node unhealthy.
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestClientRMService.java:    Assert.assertEquals("Unhealthy nodes should not show up by default", 0,
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestClientRMService.java:    Assert.assertEquals("Node is expected to be unhealthy!", NodeState.UNHEALTHY,
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/MockNodes.java:          // One unhealthy node per rack.
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/MockNodes.java:    String healthReport = (state == NodeState.UNHEALTHY) ? null : "HealthyMe";
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/NodeManager.java:    nodeHealthStatus.setIsNodeHealthy(true);
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/resourcetracker/TestRMNMRPCResponseId.java:    nodeHealthStatus.setIsNodeHealthy(true);
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/resourcetracker/TestNMExpiry.java:          nodeStatus.getNodeHealthStatus().setIsNodeHealthy(true);
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestResourceTrackerService.java:  public void testUnhealthyNodeStatus() throws Exception {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestResourceTrackerService.java:    Assert.assertEquals(0, ClusterMetrics.getMetrics().getUnhealthyNMs());
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestResourceTrackerService.java:    // node healthy
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestResourceTrackerService.java:    // node unhealthy
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestResourceTrackerService.java:    checkUnealthyNMCount(rm, nm1, true, 1);
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestResourceTrackerService.java:    // node healthy again
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestResourceTrackerService.java:    checkUnealthyNMCount(rm, nm1, false, 0);
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestResourceTrackerService.java:  private void checkUnealthyNMCount(MockRM rm, MockNM nm1, boolean health,
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestResourceTrackerService.java:    Assert.assertEquals("Unhealthy metrics not incremented", count,
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestResourceTrackerService.java:        ClusterMetrics.getMetrics().getUnhealthyNMs());
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestResourceTrackerService.java:    checkUnealthyNMCount(rm, nm2, true, 1);
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestResourceTrackerService.java:    // reconnect of healthy node
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestResourceTrackerService.java:    checkUnealthyNMCount(rm, nm2, true, 1);
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestResourceTrackerService.java:    // reconnect of unhealthy node
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestResourceTrackerService.java:    checkUnealthyNMCount(rm, nm2, true, 1);
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestResourceTrackerService.java:    // unhealthy node changed back to healthy
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/webapp/MetricsOverviewTable.java:        th().$class("ui-state-default")._("Unhealthy Nodes")._().
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/webapp/MetricsOverviewTable.java:        td().a(url("nodes/unhealthy"),String.valueOf(clusterMetrics.getUnhealthyNodes()))._().
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/webapp/dao/ClusterMetricsInfo.java:  protected int unhealthyNodes;
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/webapp/dao/ClusterMetricsInfo.java:    this.unhealthyNodes = clusterMetrics.getUnhealthyNMs();
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/webapp/dao/ClusterMetricsInfo.java:        + rebootedNodes + unhealthyNodes;
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/webapp/dao/ClusterMetricsInfo.java:  public int getUnhealthyNodes() {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/webapp/dao/ClusterMetricsInfo.java:    return this.unhealthyNodes;
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/webapp/NodesPage.java:          // unhealthy nodes.
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/ClusterMetrics.java:  @Metric("# of unhealthy NMs") MutableGaugeInt numUnhealthyNMs;
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/ClusterMetrics.java:  //Unhealthy NMs
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/ClusterMetrics.java:  public int getUnhealthyNMs() {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/ClusterMetrics.java:    return numUnhealthyNMs.value();
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/ClusterMetrics.java:  public void incrNumUnhealthyNMs() {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/ClusterMetrics.java:    numUnhealthyNMs.incr();
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/ClusterMetrics.java:  public void decrNumUnhealthyNMs() {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/ClusterMetrics.java:    numUnhealthyNMs.decr();
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/rmapp/RMApp.java:   * healthy etc. The method clears the information from the {@link RMApp}. So
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/rmnode/RMNodeImpl.java:         RMNodeEventType.STATUS_UPDATE, new StatusUpdateWhenHealthyTransition())
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/rmnode/RMNodeImpl.java:         RMNodeEventType.STATUS_UPDATE, new StatusUpdateWhenUnHealthyTransition())
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/rmnode/RMNodeImpl.java:    this.healthReport = "Healthy";
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/rmnode/RMNodeImpl.java:      metrics.decrNumUnhealthyNMs();
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/rmnode/RMNodeImpl.java:        metrics.decrNumUnhealthyNMs();
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/rmnode/RMNodeImpl.java:      metrics.incrNumUnhealthyNMs();
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/rmnode/RMNodeImpl.java:          ClusterMetrics.getMetrics().decrNumUnhealthyNMs();
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/rmnode/RMNodeImpl.java:  public static class StatusUpdateWhenHealthyTransition implements
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/rmnode/RMNodeImpl.java:      if (!remoteNodeHealthStatus.getIsNodeHealthy() || (!remoteNodeHealthStatus.getIsNodeTrusted() && rmNode.getHostName()=="hadoop-node2")) {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/rmnode/RMNodeImpl.java:  public static class StatusUpdateWhenUnHealthyTransition implements
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/main/java/org/apache/hadoop/yarn/server/resourcemanager/rmnode/RMNodeImpl.java:      if (remoteNodeHealthStatus.getIsNodeHealthy()) {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-tests/src/test/java/org/apache/hadoop/yarn/server/TestDiskFailures.java:    // log-dirs fail, then the node's health status should become unhealthy.
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-tests/src/test/java/org/apache/hadoop/yarn/server/TestDiskFailures.java:    // of the node to unhealthy".
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-tests/src/test/java/org/apache/hadoop/yarn/server/TestDiskFailures.java:    // unhealthy.
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-tests/src/test/java/org/apache/hadoop/yarn/server/TestDiskFailures.java:   * @param isHealthy <em>true</em> if the overall node should be healthy
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-tests/src/test/java/org/apache/hadoop/yarn/server/TestDiskFailures.java:      boolean isHealthy) {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-tests/src/test/java/org/apache/hadoop/yarn/server/TestDiskFailures.java:                        isHealthy, dirsHandler.areDisksHealthy());
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-tests/src/test/java/org/apache/hadoop/yarn/server/TestDiskFailures.java:      if ((iter.next().getState() != NodeState.UNHEALTHY) == isHealthy) {
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-tests/src/test/java/org/apache/hadoop/yarn/server/TestDiskFailures.java:        isHealthy, iter.next().getState() != NodeState.UNHEALTHY);
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/ResourceManagerRest.apt.vm:| unhealthyNodes | int | The number of unhealthy nodes |
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/ResourceManagerRest.apt.vm:      "unhealthyNodes":0,
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/ResourceManagerRest.apt.vm:  <unhealthyNodes>0</unhealthyNodes>
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/ResourceManagerRest.apt.vm:  * healthy - true or false 
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/ResourceManagerRest.apt.vm:        "healthStatus":"Healthy",
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/ResourceManagerRest.apt.vm:        "healthReport":"Healthy",
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/ResourceManagerRest.apt.vm:        "healthStatus":"Healthy",
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/ResourceManagerRest.apt.vm:        "healthReport":"Healthy",
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/ResourceManagerRest.apt.vm:    <healthStatus>Healthy</healthStatus>
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/ResourceManagerRest.apt.vm:    <healthReport>Healthy</healthReport>
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/ResourceManagerRest.apt.vm:    <healthStatus>Healthy</healthStatus>
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/ResourceManagerRest.apt.vm:    <healthReport>Healthy</healthReport>
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/ResourceManagerRest.apt.vm:| healthStatus | string  | The health status of the node - Healthy or Unhealthy |
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/ResourceManagerRest.apt.vm:    "healthStatus":"Healthy",
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/ResourceManagerRest.apt.vm:    "healthReport":"Healthy",
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/ResourceManagerRest.apt.vm:  <healthStatus>Healthy</healthStatus>
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/ResourceManagerRest.apt.vm:  <healthReport>Healthy</healthReport>
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/HDFSHighAvailabilityWithNFS.apt.vm:    healthy, non-zero otherwise. One might use this command for monitoring
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/HDFSHighAvailabilityWithNFS.apt.vm:    timely fashion with a healthy status, the ZKFC considers the node
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/HDFSHighAvailabilityWithNFS.apt.vm:    healthy. If the node has crashed, frozen, or otherwise entered an unhealthy
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/HDFSHighAvailabilityWithNFS.apt.vm:    state, the health monitor will mark it as unhealthy.
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/HDFSHighAvailabilityWithNFS.apt.vm:    * <<ZooKeeper session management>> - when the local NameNode is healthy, the
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/HDFSHighAvailabilityWithNFS.apt.vm:    * <<ZooKeeper-based election>> - if the local NameNode is healthy, and the
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/NodeManagerRest.apt.vm:| nodeHealthy | boolean | true/false indicator of if the node is healthy|
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/NodeManagerRest.apt.vm:      "nodeHealthy" : true,
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/NodeManagerRest.apt.vm:  <nodeHealthy>true</nodeHealthy>
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/HDFSHighAvailabilityWithQJM.apt.vm:    healthy, non-zero otherwise. One might use this command for monitoring
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/HDFSHighAvailabilityWithQJM.apt.vm:    timely fashion with a healthy status, the ZKFC considers the node
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/HDFSHighAvailabilityWithQJM.apt.vm:    healthy. If the node has crashed, frozen, or otherwise entered an unhealthy
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/HDFSHighAvailabilityWithQJM.apt.vm:    state, the health monitor will mark it as unhealthy.
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/HDFSHighAvailabilityWithQJM.apt.vm:    * <<ZooKeeper session management>> - when the local NameNode is healthy, the
+./hadoop-yarn-project/hadoop-yarn/hadoop-yarn-site/src/site/apt/HDFSHighAvailabilityWithQJM.apt.vm:    * <<ZooKeeper-based election>> - if the local NameNode is healthy, and the
