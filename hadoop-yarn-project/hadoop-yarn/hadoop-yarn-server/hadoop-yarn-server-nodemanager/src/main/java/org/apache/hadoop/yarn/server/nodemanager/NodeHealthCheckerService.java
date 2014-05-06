@@ -64,12 +64,19 @@ public class NodeHealthCheckerService extends CompositeService {
   /**
    * @return <em>true</em> if the node is healthy
    */
-  boolean isHealthy() {
+  boolean isHealthy(String hostname) {
     boolean scriptHealthStatus = (nodeHealthScriptRunner == null) ? true
-        : nodeHealthScriptRunner.isHealthy();
-    return scriptHealthStatus && dirsHandler.areDisksHealthy(); //&& false;// Add by ME
+        : nodeHealthScriptRunner.isHealthy();//Add by ME
+	boolean isTrust = AttestationService.testHost(hostname);
+	
+    return scriptHealthStatus && dirsHandler.areDisksHealthy() && isTrust;
   }
-
+  boolean isHealthy(){
+	
+    boolean scriptHealthStatus = (nodeHealthScriptRunner == null) ? true
+        : nodeHealthScriptRunner.isHealthy();//Add by ME
+    return scriptHealthStatus && dirsHandler.areDisksHealthy() ;
+}
   /**
    * @return when the last time the node health status is reported
    */
