@@ -1,0 +1,317 @@
+diff --git a/openstack_dashboard/dashboards/project/instances/tables.py b/openstack_dashboard/dashboards/project/instances/tables.py
+index 9b1a05b..65f9a66 100644
+--- a/openstack_dashboard/dashboards/project/instances/tables.py
++++ b/openstack_dashboard/dashboards/project/instances/tables.py
+@@ -14,6 +14,11 @@
+ 
+ 
+ import logging
++import httplib
++import socket
++import ssl
++import iso8601
++import six
+ 
+ from django.conf import settings
+ from django.core import urlresolvers
+@@ -33,18 +38,20 @@ from horizon.templatetags import sizeformat
+ from horizon.utils import filters
+ 
+ from openstack_dashboard import api
++from pylint.pyreverse.utils import PRIVATE
+ from openstack_dashboard.dashboards.project.access_and_security.floating_ips \
+     import workflows
+ from openstack_dashboard.dashboards.project.instances import tabs
+ from openstack_dashboard.dashboards.project.instances.workflows \
+     import update_instance
+-
++from openstack_dashboard.openstack.common import jsonutils
+ 
+ LOG = logging.getLogger(__name__)
+ 
+ ACTIVE_STATES = ("ACTIVE",)
+ VOLUME_ATTACH_READY_STATES = ("ACTIVE", "SHUTOFF")
+ SNAPSHOT_READY_STATES = ("ACTIVE", "SHUTOFF", "PAUSED", "SUSPENDED")
++VALID_TIME = {}
+ 
+ POWER_STATES = {
+     0: "NO STATE",
+@@ -665,6 +672,31 @@ class StopInstance(tables.BatchAction):
+         api.nova.server_stop(request, obj_id)
+ 
+ 
++class PollInstance(tables.BatchAction):
++    name = "poll"
++    action_present = _("Poll")
++    action_past = _("Polled")
++    verbose_name = _("Poll Instance")
++    data_type_singular = _("Instance")
++    data_type_plural = _("Instances")
++    icon = "poll"
++        
++    def get_policy_target(self, request, datum=None):
++        project_id = None
++        if datum:
++            project_id = getattr(datum, 'tenant_id', None)
++        return {"project_id": project_id}
++
++    def allowed(self, request, instance):
++        return instance.status in ("ACTIVE")
++    
++    def action(self, request, obj_id):
++        pass
++    #def single(self, table, request, instance):
++    #    #api.nova.server_confirm_resize(request, instance)
++    #    return HttpResponse(self.render())
++    #    #pass
++    
+ def get_ips(instance):
+     template_name = 'project/instances/_instance_ips.html'
+     context = {"instance": instance}
+@@ -701,6 +733,68 @@ def get_power_state(instance):
+     return POWER_STATES.get(getattr(instance, "OS-EXT-STS:power_state", 0), '')
+ 
+ 
++def get_trust_state(instance):
++    # Note: The patch is only for demo purpose
++    # 
++    # Instance is ready, so we can query the status from OAT server.
++    # If we got "unknown_hacked" when the instance is ready which means instance is under deployment by Triplo.
++    # If that case is true, we shall wait until get a reasonable status from OAT server
++    global VALID_TIME
++    if getattr(instance, "status") == "ACTIVE":
++        # Caution: Maybe only HOST IP is accepted here
++        #hostaddr = instance.addresses['private'][0]['addr']
++        #hosts = [hostaddr]
++        hostaddr = '192.168.98.46'
++        hosts = ['192.168.98.46']
++        LOG.debug("Dave print out the IP address: %s" %hosts)
++        attestationinst = AttestationService()
++        res, valid_time = attestationinst.do_attestation(hosts)
++        #attrs = {"vtime":valid_time}
++        VALID_TIME[hostaddr] = valid_time
++        LOG.debug("Dave print out the res: %s" %res)
++        LOG.debug("Dave print out valid time: %s" %res)
++        #return "trusted"
++        return res
++    #Instance which is not active, set the status to "unknown" directly
++    if getattr(instance, "status") != "ACTIVE" and getattr(instance, "status") in SNAPSHOT_READY_STATES:
++        return "unknown"
++    #Instance is under building, wait until get a reasonable status from OAT server
++    else:
++        return "unknown_hacked"
++
++    
++def get_valid_time(instance):
++    global VALID_TIME
++    if instance.status in "ACTIVE":
++        #hostaddr = instance.addresses['private'][0]['addr']
++        LOG.debug("Dave print out the cache of VALID_TIME: %s" %VALID_TIME)
++        hostaddr = '192.168.98.46'
++        vtime = VALID_TIME.get(hostaddr)
++        #return VALID_TIME.get(hostaddr)
++        VALID_TIME = {}
++        return vtime
++    else:
++        return None
++
++
++def parse_isotime(timestr):
++    """Parse time from ISO 8601 format."""
++    try:
++        return iso8601.parse_date(timestr)
++    except iso8601.ParseError as e:
++        raise ValueError(six.text_type(e))
++    except TypeError as e:
++        raise ValueError(six.text_type(e))
++
++    
++def normalize_time(timestamp):
++    """Normalize time in arbitrary timezone to UTC naive object."""
++    offset = timestamp.utcoffset()
++    if offset is None:
++        return timestamp
++    return timestamp.replace(tzinfo=None) - offset
++
++
+ STATUS_DISPLAY_CHOICES = (
+     ("deleted", _("Deleted")),
+     ("active", _("Active")),
+@@ -779,6 +873,14 @@ POWER_DISPLAY_CHOICES = (
+     ("BUILDING", _("Building")),
+ )
+ 
++TCP_DISPLAY_CHOICES = (
++    ("trusted", _("Trusted")),
++    ("untrusted", _("Untrusted")),
++    ("unknown", _("Unknown")),
++    #("unknown", _("Untrusted")),
++    ("unknown_hacked", _("Pending")),
++    #("unknown_hacked", _("Untrusted")),
++)
+ 
+ class InstancesFilterAction(tables.FilterAction):
+     filter_type = "server"
+@@ -802,6 +904,12 @@ class InstancesTable(tables.DataTable):
+         ("rescue", True),
+         ("shelved_offloaded", True),
+     )
++    TCP_STATUS_CHOICES = (
++        ("trusted", True),
++        ("untrusted", False),
++        ("unknown", False),
++        ("unknown_hacked", None)
++    )
+     name = tables.Column("name",
+                          link=("horizon:project:instances:detail"),
+                          verbose_name=_("Instance Name"))
+@@ -837,11 +945,21 @@ class InstancesTable(tables.DataTable):
+                             filters=(filters.parse_isotime,
+                                      filters.timesince_sortable),
+                             attrs={'data-type': 'timesince'})
++    tw = tables.Column(get_trust_state,
++                       filters=(title, filters.replace_underscores),
++                       verbose_name=_("Trustworthiness"),
++                       status=True,
++                       status_choices=TCP_STATUS_CHOICES,
++                       display_choices=TCP_DISPLAY_CHOICES)
++    
++    vt = tables.Column(get_valid_time,
++                       filters=(title, filters.replace_underscores),
++                       verbose_name=_("Valid Time"))    
+ 
+     class Meta:
+         name = "instances"
+         verbose_name = _("Instances")
+-        status_columns = ["status", "task"]
++        status_columns = ["status", "task", "tw"]
+         row_class = UpdateRow
+         table_actions = (LaunchLink, SoftRebootInstance, TerminateInstance,
+                          InstancesFilterAction)
+@@ -851,4 +969,125 @@ class InstancesTable(tables.DataTable):
+                        DecryptInstancePassword, EditInstanceSecurityGroups,
+                        ConsoleLink, LogLink, TogglePause, ToggleSuspend,
+                        ResizeLink, SoftRebootInstance, RebootInstance,
+-                       StopInstance, RebuildInstance, TerminateInstance)
++                       StopInstance, RebuildInstance, TerminateInstance, PollInstance)
++
++
++class HTTPSClientAuthConnection(httplib.HTTPSConnection):
++    """Class to make a HTTPS connection, with support for full client-based
++    SSL Authentication
++    """
++
++    def __init__(self, host, port, key_file, cert_file, ca_file, timeout=None):
++        httplib.HTTPSConnection.__init__(self, host,
++                                         key_file=key_file,
++                                         cert_file=cert_file)
++        self.host = host
++        self.port = port
++        self.key_file = key_file
++        self.cert_file = cert_file
++        self.ca_file = ca_file
++        self.timeout = timeout
++        #self.timeout = 5
++
++    def connect(self):
++        """Connect to a host on a given (SSL) port.
++        If ca_file is pointing somewhere, use it to check Server Certificate.
++
++        Redefined/copied and extended from httplib.py:1105 (Python 2.6.x).
++        This is needed to pass cert_reqs=ssl.CERT_REQUIRED as parameter to
++        ssl.wrap_socket(), which forces SSL to check server certificate
++        against our client certificate.
++        """
++        sock = socket.create_connection((self.host, self.port), self.timeout)
++        self.sock = ssl.wrap_socket(sock, self.key_file, self.cert_file,
++                                    ca_certs=self.ca_file,
++                                    cert_reqs=ssl.CERT_REQUIRED)
++
++
++class AttestationService(object):
++    # Provide access wrapper to attestation server to get integrity report.
++
++    def __init__(self):
++        #self.api_url = CONF.trusted_computing.attestation_api_url
++        self.api_url = '/AttestationService/resources'
++        #self.host = CONF.trusted_computing.attestation_server
++        self.host = '192.168.98.47'
++        #self.port = CONF.trusted_computing.attestation_port
++        self.port = '8181'
++        #self.auth_blob = CONF.trusted_computing.attestation_auth_blob
++        self.auth_blob = 'I-am-OpenStack'
++        self.key_file = None
++        self.cert_file = None
++        #self.ca_file = CONF.trusted_computing.attestation_server_ca_file
++        self.ca_file = '/home/stack/certfile.cer'
++        #self.ca_file = '/root/certfile.cer'
++        self.request_count = 100
++
++    def _do_request(self, method, action_url, body, headers):
++        # Connects to the server and issues a request.
++        # :returns: result data
++        # :raises: IOError if the request fails
++        
++        action_url = "%s/%s" % (self.api_url, action_url)
++        LOG.debug('Dave print out in dashboard, %(host)s:%(port)s:%(key_file)s:%(cert_file)s:%(ca_file)s:%(action_url)s ',
++                   {'host': self.host, 'port': self.port, 'key_file': self.key_file, 'cert_file': self.cert_file, 'ca_file': self.ca_file, 'action_url': action_url})
++
++        try:
++            c = HTTPSClientAuthConnection(self.host, self.port,
++                                          key_file=self.key_file,
++                                          cert_file=self.cert_file,
++                                          ca_file=self.ca_file)
++            c.request(method, action_url, body, headers)
++            res = c.getresponse()
++            status_code = res.status
++            if status_code in (httplib.OK,
++                               httplib.CREATED,
++                               httplib.ACCEPTED,
++                               httplib.NO_CONTENT):
++                return httplib.OK, res
++            return status_code, None
++
++        except (socket.error, IOError):
++            return IOError, None
++        #In case other exception will be thrown, such as the cert if not correct
++        #except Exception, e:
++        #    return Exception, None
++
++    def _request(self, cmd, subcmd, hosts):
++        body = {}
++        body['count'] = len(hosts)
++        body['hosts'] = hosts
++        cooked = jsonutils.dumps(body)
++        headers = {}
++        headers['content-type'] = 'application/json'
++        headers['Accept'] = 'application/json'
++        if self.auth_blob:
++            headers['x-auth-blob'] = self.auth_blob
++        status, res = self._do_request(cmd, subcmd, cooked, headers)
++        if status == httplib.OK:
++            data = res.read()
++            return status, jsonutils.loads(data)
++        else:
++            return status, None
++
++    def do_attestation(self, hosts):
++        """Attests compute nodes through OAT service.
++
++        :param hosts: hosts list to be attested
++        :returns: dictionary for trust level and validate time
++        """
++        result = None
++        #valid_time = '---'
++        valid_time = None
++        status, data = self._request("POST", "PollHosts", hosts)
++        LOG.debug("Dave Debug, print date returned %s " %data)
++        if data is not None:
++            result = data.get('hosts')[0]
++            if result['trust_lvl']:
++                #isTrusted, valid_time = result['trust_lvl'], result['vtime']
++                isTrusted, valid_time = result['trust_lvl'], normalize_time(parse_isotime(result['vtime']))
++            else:
++                isTrusted = "unknown"
++        else:
++            isTrusted = "unknown"
++        return isTrusted, valid_time
