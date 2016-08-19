@@ -107,7 +107,6 @@ class OAuth(object):
         # check the headers that is returned.
         url, headers, body = client.sign(endpoint,
                                          http_method='POST')
-        headers.update({'Content-Type': 'application/json'})
 
         request = urllib2.Request(endpoint)
         request.headers = headers
@@ -126,9 +125,12 @@ class OAuth(object):
         url, headers, body = client.sign(endpoint,
                                          http_method='POST')
         # This will cause the headers for 't' is upper case, which will not pass
-        # (Pdb) p request.headers
+        # (Pdb) p request.headers, so it will defaults to be 'application/x-www-form-urlencoded'?
+        # (Pdb) p request.content_type
+        # 'application/x-www-form-urlencoded'
+        # change the key to be 'Content_type' will fix
+        # the issue.
         #headers.update({'Content-Type': 'application/json'})
-
         ref = {'auth': {'identity': {'oauth1': {}, 'methods': ['oauth1']}}}
         data = json.dumps(ref)
         request = urllib2.Request(endpoint, data)
@@ -136,6 +138,8 @@ class OAuth(object):
         # This will cause the headers for 't' is lower case
         # (Pdb) p request.headers
         # {'Content-type': 'application/json'...
+        # add header will call capitalize('key') so that it will convert the key to 'Content-type' but
+        # the method mentioned above will not, so the header will ignored by the urllib2.
         request.add_header('Content-Type', 'application/json')
         request.get_method = lambda:'POST'
         response = urllib2.urlopen(request)
