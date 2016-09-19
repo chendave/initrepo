@@ -2,6 +2,10 @@
 Created on 2016 y 8 m 14 d
 
 @author: wchen106
+
+This is only verifed with keystone with uwsgi, since the header of project id cannot
+be passed under apache with mod wsgi, there must be a way to fix that, but as a POC
+there is no need to investigate on that.
 '''
 import uuid
 import json
@@ -10,6 +14,7 @@ from oauthlib import oauth1
 from six.moves import urllib
 from keystone.oauth1.backends.sql import Consumer
 
+token_id = '4fda12eef94c42e2aad7aa9f88bdb7db'
 
 def _urllib_parse_qs_text_keys(content):
     results = urllib.parse.parse_qs(content)
@@ -35,7 +40,7 @@ class OAuth(object):
         body = {'consumer':{'description': uuid.uuid4().hex}}
         data = json.dumps(body)
         request = urllib2.Request(endpoint, data)
-        request.add_header('X-Auth-Token', 'db310df0df564a6cba21d865d4f3f7b8')
+        request.add_header('X-Auth-Token', token_id)
         request.add_header('Content-Type', 'application/json')
         response = urllib2.urlopen(request)
         return json.load(response)['consumer']
@@ -85,7 +90,7 @@ class OAuth(object):
         body = {'roles': [{'id': role_id}]}
         data = json.dumps(body)
         request = urllib2.Request(endpoint, data)
-        request.add_header('X-Auth-Token', 'db310df0df564a6cba21d865d4f3f7b8')
+        request.add_header('X-Auth-Token', token_id)
         request.add_header('Content-Type', 'application/json')
         request.get_method = lambda:'PUT'
         resp = urllib2.urlopen(request)
