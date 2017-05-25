@@ -1,0 +1,57 @@
+MYSQL_PASSWORD=zaq12wsx
+RABBIT_PASSWORD=zaq12wsx
+SERVICE_TOKEN=zaq12wsx
+SERVICE_PASSWORD=zaq12wsx
+ADMIN_PASSWORD=zaq12wsx
+GIT_BASE=https://git.openstack.org
+#comment for multiple node, controller node
+SCREEN_LOGDIR=/opt/stack/logs
+API_RATE_LIMIT=False
+LOGFILE=/opt/stack/logs/stack.sh.log
+VERBOSE=True
+LOG_COLOR=True
+FIXED_RANGE=10.0.0.0/16
+HOST_IP=10.239.48.102
+MYSQL_HOST=10.239.48.102
+RABBIT_HOST=10.239.48.102
+FIXED_NETWORK_SIZE=4096
+
+
+#Neutron Options
+# Disable security group
+Q_USE_SECGROUP=False
+LIBVIRT_FIREWALL_DRIVER=nova.virt.firewall.NoopFirewallDriver
+#Q_L3_ENABLED=True
+#NEUTRON_CREATE_INITIAL_NETWORKS=False
+FLAT_INTERFACE=eth0
+#PUBLIC_INTERFACE=eth0
+Q_FLOATING_ALLOCATION_POOL=start=192.168.4.101,end=192.168.4.201
+FLOATING_RANGE=192.168.4.0/24
+PUBLIC_NETWORK_GATEWAY=192.168.4.10
+#PUBLIC_INTERFACE=eth0
+
+# Open vSwitch provider networking configuration
+#Q_USE_PROVIDERNET_FOR_PUBLIC=True
+#OVS_BRIDGE_MAPPINGS=public:br-ex
+#PUBLIC_BRIDGE=br-ex
+#OVS_PHYSICAL_BRIDGE=br-ex
+
+# Linux bridge
+#Q_USE_PROVIDERNET_FOR_PUBLIC=True
+#Q_AGENT=linuxbridge
+#LB_PHYSICAL_INTERFACE=eth0
+#PUBLIC_PHYSICAL_NETWORK=default
+#LB_INTERFACE_MAPPINGS=default:eth0
+
+ENABLED_SERVICES+=,heat,h-api,h-api-cfn,h-api-cw,h-eng
+NOVA_VNC_ENABLED=True
+NOVNCPROXY_URL="http://10.239.48.102:6080/vnc_auto.html"
+VNCSERVER_LISTEN=$HOST_IP
+VNCSERVER_PROXYCLIENT_ADDRESS=$VNCSERVER_LISTEN
+DATABASE_TYPE=mysql
+
+#IMAGE_URL_SITE="http://mirror.nodesdirect.com"
+#IMAGE_URL_PATH="/fedora/releases/25/CloudImages/x86_64/images/"
+#IMAGE_URL_FILE="Fedora-Cloud-Base-25-1.3.x86_64.qcow2"
+#IMAGE_URLS+=","$IMAGE_URL_SITE$IMAGE_URL_PATH$IMAGE_URL_FILE
+enable_plugin heat https://git.openstack.org/openstack/heat
