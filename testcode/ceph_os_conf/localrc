@@ -1,0 +1,34 @@
+HOST_IP=10.239.159.68
+FLAT_INTERFACE=eth0
+FIXED_RANGE=10.4.128.0/20
+FIXED_NETWORK_SIZE=4096
+MULTI_HOST=1
+LOGFILE=/opt/stack/logs/stack.sh.log
+ADMIN_PASSWORD=zaq12wsx
+DATABASE_PASSWORD=zaq12wsx
+RABBIT_PASSWORD=zaq12wsx
+SERVICE_PASSWORD=zaq12wsx
+GIT_BASE=https://git.openstack.org
+
+disable_service n-net
+enable_service q-svc
+enable_service q-agt
+enable_service q-dhcp
+enable_service q-l3
+enable_service q-meta
+enable_service neutron
+
+### Neutron options
+#Q_USE_SECGROUP=True
+#FLOATING_RANGE="172.18.161.0/24"
+#IPV4_ADDRS_SAFE_TO_USE="10.0.0.0/22"
+#Q_FLOATING_ALLOCATION_POOL=start=172.18.161.250,end=172.18.161.254
+#PUBLIC_NETWORK_GATEWAY="172.18.161.1"
+#PUBLIC_INTERFACE=eth0
+#NETWORK_GATEWAY=10.11.12.1
+#
+## Open vSwitch provider networking configuration
+#Q_USE_PROVIDERNET_FOR_PUBLIC=True
+#OVS_PHYSICAL_BRIDGE=br-ex
+#PUBLIC_BRIDGE=br-ex
+#OVS_BRIDGE_MAPPINGS=public:br-ex
