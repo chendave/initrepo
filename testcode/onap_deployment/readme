@@ -1,0 +1,2 @@
+run the below command to deploy the stack:
+`openstack stack create -t onap_openstack.yaml -e onap_openstack.env ONAP`

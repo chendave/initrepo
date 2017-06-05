@@ -6,23 +6,26 @@
 wget https://github.com/openstack/tosca-parser/tree/master/toscaparser/tests/data/CSAR/csar_hello_world.zip
 sudo pip install tosca-parser
 sudo pip install heat-translator
+# only convert the CSAR into HOT
+heat-translator --template-file csar_hello_world.zip
+# further more, deploy the stack
 heat-translator --template-file csar_hello_world.zip --stack-name mystack --deploy
 # The output may looks like the below
-#..heat_template_version: 2013-05-23
-#..
-#..description: >
-#..  Template for deploying a single server with predefined properties.
-#..
-#..parameters: {}
-#..resources:
-#..  my_server:
-#..    type: OS::Nova::Server
-#..    properties:
-#..      flavor: ds2G
-#..      user_data_format: SOFTWARE_CONFIG
-#..      image: rhel-6.5-test-image
-#..
-#..outputs: {}
+#heat_template_version: 2013-05-23
+#
+#description: >
+#  Template for deploying a single server with predefined properties.
+#
+#parameters: {}
+#resources:
+#  my_server:
+#    type: OS::Nova::Server
+#    properties:
+#      flavor: ds2G
+#      user_data_format: SOFTWARE_CONFIG
+#      image: rhel-6.5-test-image
+#
+#outputs: {}
 
 # source openstack env
 # check the stack is being running
