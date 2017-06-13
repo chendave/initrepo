@@ -1,11 +1,15 @@
 #!/bin/bash
 # These script show the commands to translate the TOSCA CSAR into HOT (Heat Orchestration Tempaltes)
+# based on "heat-translator" project.
 
 # Get the CSAR from tosca parser project, the file may not been downloaded correclty, so
 # you should verify the content manually.
 wget https://github.com/openstack/tosca-parser/tree/master/toscaparser/tests/data/CSAR/csar_hello_world.zip
 sudo pip install tosca-parser
 sudo pip install heat-translator
+# validate by tosca-parser
+tosca-parser --template-file csar_elk.zip
+# `pwd` is tosca-parser/toscaparser/tests/data/CSAR
 # only convert the CSAR into HOT
 heat-translator --template-file csar_hello_world.zip
 # further more, deploy the stack
