@@ -21,7 +21,7 @@ openstack flavor create m1.large --ram 6144 --vcpus 3 --disk 80
 
 # NOTE: You need download those cloud image and drop them under the current dir
 openstack image create ubuntu1604 --file ubuntu-14.04-server-cloudimg-amd64-disk1.img --disk-format qcow2
-openstack image create ubuntu1404 --file ubuntu-14.04-server-cloudimg-amd64-disk1.img --disk-format qcow2
+openstack image create ubuntu1404 --file ubuntu-16.04-server-cloudimg-amd64-disk1.img --disk-format qcow2
 
 pubnet_id=`openstack network list -f value | grep "public" | awk -F' ' {'print $1'}`
 sed -i "s/.*public_net_id.*/  public_net_id: $pubnet_id/g" onap_openstack.env
