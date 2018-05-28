@@ -10,7 +10,7 @@ raw=""
 while [ $# -gt 0 ]; do
   case "$1" in
     -h)
-          echo "-d: [S4500, P4500, P4510], -t: [1, 2, 4], -u: database username, -p: database password"
+          echo "Usage: -d: [S4500, P4500, P4510], -t: [1, 2, 4], -u: database username, -p: database password"
           exit 3
           ;;
     -d)
@@ -65,9 +65,10 @@ do_sysbench () {
   if [ ! -d "$folder" ]; then
       mkdir "$folder"
   fi
-  mysql -u root -pabc123 -e "create database dbtest"
+  mysql -u $username -p$password -e "create database dbtest"
   sysbench --test=oltp --oltp-table-size=10000 --mysql-db=dbtest --mysql-user=$username --mysql-password=$password prepare
-  for i in 1 4 8
+  for i in 1 4 8 12
+  # for i in 12
   do
     mkdir $folder/$i
     for j in $(seq 1 10)
@@ -78,19 +79,24 @@ do_sysbench () {
 }
 
 do_cleanup () {
-   sysbench --test=oltp --mysql-db=dbtest --mysql-user=root --mysql-password=abc123 cleanup
-   mysql -u root -pabc123 -e "drop database dbtest"
+   #umount
+   #cleanup data, rm xxx
+   # cd /var/lib/mysqldb
+   # rm -rf *
+   sysbench --test=oltp --mysql-db=dbtest --mysql-user=$username --mysql-password=$password cleanup
+   mysql -u $username -p$password -e "drop database dbtest"
    sudo service mysql stop
-   # Cleanup data, remove everyting!
-   cd /var/lib/mysqldb
-   rm -rf *
    sudo umount /var/lib/mysqldb 
 }
 
-# do_analysis () {
-#   # Get the data and do analysis
-# }
+do_analysis () {
+  # Get the data and do analysis
+  # cd to the dir and get the data
+  grep "transactions:" ./* -R | cut -d '(' -f2|cut -d ')' -f1 |awk -F" " '{print $1}' | awk '{a+=$1}END{print a}'
+  grep "avg:" ./* -R | awk -F" " '{print $3}' | awk '{a+=$1}END{print a}'
+}
 
+do_cleanup
 do_prepare
 do_sysbench
-do_cleanup
+# do_cleanup
