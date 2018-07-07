@@ -1,0 +1,47 @@
+# This configuration will be used in this case -
+# bind the NIC specified by PUBLIC_INTERFACE to bridge, and define the floating ip within the same network segment
+# as the physical NIC.
+
+
+HOST_IP=192.168.20.132
+SERVICE_HOST=192.168.20.132
+MYSQL_HOST=$SERVICE_HOST
+RABBIT_HOST=$SERVICE_HOST
+GLANCE_HOSTPORT=$SERVICE_HOST:9292
+ADMIN_PASSWORD=abc123
+DATABASE_PASSWORD=abc123
+RABBIT_PASSWORD=abc123
+SERVICE_PASSWORD=abc123
+DATABASE_TYPE=mysql
+
+## Neutron options
+Q_USE_SECGROUP=True
+FLOATING_RANGE="192.168.23.1/21"
+# alternatively, define it as below:
+# FLOATING_RANGE="192.168.23.1/24"
+IPV4_ADDRS_SAFE_TO_USE="10.0.0.0/22"
+Q_FLOATING_ALLOCATION_POOL=start=192.168.23.100,end=192.168.23.120
+PUBLIC_NETWORK_GATEWAY="192.168.18.1"
+PUBLIC_INTERFACE=eno1
+
+# Open vSwitch provider networking configuration
+Q_USE_PROVIDERNET_FOR_PUBLIC=True
+OVS_PHYSICAL_BRIDGE=br-ex
+PUBLIC_BRIDGE=br-ex
+OVS_BRIDGE_MAPPINGS=public:br-ex
+
+# Multi-node cluster
+MULTI_HOST=1
+
+# MISC
+LOGFILE=/opt/stack/logs/stack.sh.log
+NOVA_VNC_ENABLED=True
+NOVNCPROXY_URL="http://$SERVICE_HOST:6080/vnc_auto.html"
+VNCSERVER_LISTEN=$HOST_IP
+VNCSERVER_PROXYCLIENT_ADDRESS=$VNCSERVER_LISTEN
+GIT_BASE=https://git.openstack.org
+
+# Settings for DVR networking
+# Q_DVR_MODE=dvr_snat
+# Q_PLUGIN=ml2
+# Q_ML2_TENANT_NETWORK_TYPE=vxlan
