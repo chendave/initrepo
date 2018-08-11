@@ -7,7 +7,7 @@ set -e
 # type the alias "stack" and then source env.
 # stack
 cd /home/dave/Project/OpenStack/devstack
-source openrc admin admin
+source openrc admin demo
 
 
 #### Discovery any of compute node
