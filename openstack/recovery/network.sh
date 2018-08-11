@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# set -e -x
 set -e
 
 #### source env

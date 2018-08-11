@@ -19,7 +19,10 @@ PUBLIC_NETWORK_GATEWAY="192.168.18.1"
 PUBLIC_INTERFACE=eno1
 
 # Open vSwitch provider networking configuration
+Q_USE_PROVIDERNET_FOR_PUBLIC=True
+OVS_PHYSICAL_BRIDGE=br-ex
 PUBLIC_BRIDGE=br-ex
+OVS_BRIDGE_MAPPINGS=public:br-ex
 
 # Multi-node cluster
 MULTI_HOST=1
