@@ -11,7 +11,7 @@ source openrc admin demo
 
 #### Discovery any of compute node
 cd tools
-bash discover_hosts.sh
+# bash discover_hosts.sh
 
 
 #### address the security group
@@ -26,15 +26,20 @@ openstack security group rule create $secgrp_id --ingress --protocol tcp --dst-p
 
 #### create another private network and attach the interface into router
 openstack network create private2 --project demo
-openstack subnet create private2-subnet --project demo --subnet-range 10.0.8.0/26 --network private2
+openstack subnet create private2-subnet --project demo --subnet-range 10.1.0.0/22 --network private2
 subnet_id=`openstack subnet list | grep private2-subnet | awk -F "|" '{print $2}' | grep -o "[^ ]\+\( \+[^ ]\+\)*"`
 neutron router-interface-add router1 subnet=$subnet_id
 
 ### Create the keypair that canbe used for access the VM
-openstack keypair create test --public-key ~/.ssh/id_rsa.pub
+openstack keypair create local --public-key ~/.ssh/id_rsa.pub
 
 ### create an instance with the new network, update the server name accordingly.
 openstack server create --image cirros-0.3.5-x86_64-disk --flavor m1.tiny --key-name local --availability-zone nova:os-compute1 --nic net-id=private2 test1
+
+### upload the images, go to the directory where the images are lived there
+cd /home/dave/images
+openstack image create ubuntu1604 --file ubuntu-16.04-server-cloudimg-amd64-disk1.img --public
+openstack image create CentOS7 --file CentOS-7-x86_64-GenericCloud-1503.qcow2 --public
 
 
 ### ping the instance, example

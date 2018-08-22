@@ -6,6 +6,13 @@ username="root"
 password="abc123"
 folder="/home/dave/result/P4500"
 raw=""
+tran=""
+avg=""
+centric_db_host="192.168.20.169"
+centric_db_userame="root"
+centric_db_password="DELL-esi-db1"
+timestamp=`date +"%Y-%m-%d_%H-%M-%S"`
+
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -79,24 +86,31 @@ do_sysbench () {
 }
 
 do_cleanup () {
-   #umount
-   #cleanup data, rm xxx
-   # cd /var/lib/mysqldb
-   # rm -rf *
-   sysbench --test=oltp --mysql-db=dbtest --mysql-user=$username --mysql-password=$password cleanup
-   mysql -u $username -p$password -e "drop database dbtest"
-   sudo service mysql stop
-   sudo umount /var/lib/mysqldb 
+  #umount
+  #cleanup data, rm xxx
+  # cd /var/lib/mysqldb
+  # rm -rf *
+  sysbench --test=oltp --mysql-db=dbtest --mysql-user=$username --mysql-password=$password cleanup
+  mysql -u $username -p$password -e "drop database dbtest"
+  sudo service mysql stop
+  sudo umount /var/lib/mysqldb 
 }
 
 do_analysis () {
-  # Get the data and do analysis
-  # cd to the dir and get the data
-  grep "transactions:" ./* -R | cut -d '(' -f2|cut -d ')' -f1 |awk -F" " '{print $1}' | awk '{a+=$1}END{print a}'
-  grep "avg:" ./* -R | awk -F" " '{print $3}' | awk '{a+=$1}END{print a}'
+  # fetch the data and do analysis
+  # shell code below may has the issue if we run benchmark only one time, but it's okay for multiple times
+  tran=`grep "transactions:" ./*.out -R | cut -d '(' -f2|cut -d ')' -f1 |awk -F" " '{print $1}' | awk '{a+=$1}END{print a}'`
+  avg=`grep "avg:" ./*.out -R | awk -F" " '{print $3}' | awk '{a+=$1}END{print a}'`
+}
+
+
+do_writedatabase() {
+  # connect to the database and write the final data into database;
+  mysql -h $centric_db_host -u $centric_db_userame -p$centric_db_password -e "use sysbench; insert into bench_result(drivemodel, trans, avg, timestamp) values (\"$disk\", \"$tran\", \"$avg\", \"$timestamp\")"
 }
 
 do_cleanup
 do_prepare
 do_sysbench
-# do_cleanup
+do_analysis
+do_writedatabase
