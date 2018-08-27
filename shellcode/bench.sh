@@ -1,10 +1,20 @@
 #!/bin/bash
+
+################################################
+#Author: Dave Chen                             #
+#Mail: dave.jungler@gmail.com                  #
+#                                              #
+# Since the name of device may vary, you need  #
+# rename the device per the real situation.    #
+################################################
+
+
 set -e
 
 disk=""
 username="root"
 password="abc123"
-folder="/home/dave/result/P4500"
+# folder="/home/dave/result/P4500"
 raw=""
 tran=""
 avg=""
@@ -13,6 +23,11 @@ centric_db_userame="root"
 centric_db_password="DELL-esi-db1"
 timestamp=`date +"%Y-%m-%d_%H-%M-%S"`
 
+
+if [ $# -eq 0 ]; then
+  echo "No parameters, pls input parameters:"
+  echo "Usage: -d: [S4500, P4500, P4510], -t: [1, 2, 4], -u: database username, -p: database password"
+fi
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -44,6 +59,13 @@ while [ $# -gt 0 ]; do
   esac
 done
 
+# TODO(davechen): Properly, password for database is needed here, will update the code later.
+do_deps () {
+ sudo -E -H apt-get install mysql-server -y
+ sudo -E -H apt-get install sysbench -y
+}
+
+#TODO(davechen): Possible to remove hardcode here?
 do_prepare () {
   if [ $disk = 'P4510' ]; then
     raw="/dev/nvme0n1"
@@ -51,10 +73,10 @@ do_prepare () {
      if [ $disk = 'P4500' ]; then
        raw="/dev/nvme1n1"
      else
-       raw="/dev/sda"
+       raw="/dev/sdb"
      fi
   fi
-  sudo mount -t xfs "$raw" /var/lib/mysqldb
+  sudo mount -t ext4 "$raw" /var/lib/mysqldb
   folder=/home/dave/result/$disk
   if [ ! -d "$folder" ]; then
        mkdir "$folder"
@@ -74,8 +96,9 @@ do_sysbench () {
   fi
   mysql -u $username -p$password -e "create database dbtest"
   sysbench --test=oltp --oltp-table-size=10000 --mysql-db=dbtest --mysql-user=$username --mysql-password=$password prepare
-  for i in 1 4 8 12
-  # for i in 12
+  # Either choose a range of threads or just pick up the num of thread from input.
+  # for i in 1 4 8 12
+  for i in $nthread
   do
     mkdir $folder/$i
     for j in $(seq 1 10)
@@ -86,30 +109,30 @@ do_sysbench () {
 }
 
 do_cleanup () {
-  #umount
-  #cleanup data, rm xxx
-  # cd /var/lib/mysqldb
-  # rm -rf *
-  sysbench --test=oltp --mysql-db=dbtest --mysql-user=$username --mysql-password=$password cleanup
-  mysql -u $username -p$password -e "drop database dbtest"
+  sysbench --test=oltp --mysql-db=dbtest --mysql-user=$username --mysql-password=$password cleanup || true
+  mysql -u $username -p$password -e "drop database dbtest" || true
   sudo service mysql stop
-  sudo umount /var/lib/mysqldb 
+  sudo umount /var/lib/mysqldb || true
 }
 
 do_analysis () {
   # fetch the data and do analysis
   # shell code below may has the issue if we run benchmark only one time, but it's okay for multiple times
+  cd $folder/1
   tran=`grep "transactions:" ./*.out -R | cut -d '(' -f2|cut -d ')' -f1 |awk -F" " '{print $1}' | awk '{a+=$1}END{print a}'`
+  res_tran=$[$tran/10]
   avg=`grep "avg:" ./*.out -R | awk -F" " '{print $3}' | awk '{a+=$1}END{print a}'`
+  res_avg=$[$avg/10]
 }
 
 
 do_writedatabase() {
   # connect to the database and write the final data into database;
-  mysql -h $centric_db_host -u $centric_db_userame -p$centric_db_password -e "use sysbench; insert into bench_result(drivemodel, trans, avg, timestamp) values (\"$disk\", \"$tran\", \"$avg\", \"$timestamp\")"
+  mysql -h $centric_db_host -u $centric_db_userame -p$centric_db_password -e "use workload; insert into bench_result(drivemodel, trans, avg, timestamp) values (\"$disk\", \"$res_tran\", \"$res_avg\", \"$timestamp\")"
 }
 
 do_cleanup
+# do_deps
 do_prepare
 do_sysbench
 do_analysis
