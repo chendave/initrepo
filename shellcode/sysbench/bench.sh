@@ -85,6 +85,10 @@ do_prepare () {
   sudo rm -rf *
   sudo sh -c "cp -r /var/lib/mysql/* /var/lib/mysqldb/"
   sudo chown -R mysql:mysql /var/lib/mysqldb
+  # disable cache
+  sudo echo 3 | sudo tee /proc/sys/vm/drop_caches && sudo sync
+  sudo swapoff -a
+  cp my.cnf /etc/mysql/
   sudo service mysql start
 }
 
