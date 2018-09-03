@@ -11,7 +11,7 @@ source openrc admin demo
 
 #### Discovery any of compute node
 cd tools
-# bash discover_hosts.sh
+bash discover_hosts.sh
 
 
 #### address the security group

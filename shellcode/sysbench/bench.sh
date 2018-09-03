@@ -1,10 +1,10 @@
 #!/bin/bash
 
 ################################################
-#Author: Dave Chen                             #
-#Mail: dave.jungler@gmail.com                  #
+# Author: Dave Chen                            #
+# Mail: dave.jungler@gmail.com                 #
 #                                              #
-# Since the name of device may vary, you need  #
+# The name of device may vary, you need        #
 # rename the device per the real situation.    #
 ################################################
 
@@ -60,6 +60,15 @@ while [ $# -gt 0 ]; do
 done
 
 # TODO(davechen): Properly, password for database is needed here, will update the code later.
+# script like below are needed here:
+# sudo -E -H apt-get install expect -y
+#/usr/bin/expect <<EOD
+#spawn sudo -E -H apt-get install mysql-server -y
+#expect "New password for the MySQL \"root\" user: "
+#send "abc123\n"
+#expect eof
+#EOD
+
 do_deps () {
  sudo -E -H apt-get install mysql-server -y
  sudo -E -H apt-get install sysbench -y
@@ -102,14 +111,15 @@ do_sysbench () {
   sysbench --test=oltp --oltp-table-size=10000 --mysql-db=dbtest --mysql-user=$username --mysql-password=$password prepare
   # Either choose a range of threads or just pick up the num of thread from input.
   # for i in 1 4 8 12
-  for i in $nthread
+  # NOTE(davechen): You can run multiple thead in the same loop, but we only pickup one each time to make us easier to write data into database;
+  #for i in $nthread
+  #do
+  mkdir $folder/$nthread
+  for j in $(seq 1 10)
   do
-    mkdir $folder/$i
-    for j in $(seq 1 10)
-    do
-     sysbench --test=oltp --oltp-table-size=10000 --num-threads=$i --oltp-test-mode=complex --mysql-db=dbtest --mysql-user=$username --mysql-password=$password run | tee $folder/$i/$j.out;
-    done
+    sysbench --test=oltp --oltp-table-size=10000 --num-threads=$i --oltp-test-mode=complex --mysql-db=dbtest --mysql-user=$username --mysql-password=$password run | tee $folder/$nthread/$j.out;
   done
+  #done
 }
 
 do_cleanup () {
@@ -122,17 +132,22 @@ do_cleanup () {
 do_analysis () {
   # fetch the data and do analysis
   # shell code below may has the issue if we run benchmark only one time, but it's okay for multiple times
-  cd $folder/1
+  cd $folder/$nthread
   tran=`grep "transactions:" ./*.out -R | cut -d '(' -f2|cut -d ')' -f1 |awk -F" " '{print $1}' | awk '{a+=$1}END{print a}'`
   res_tran=$[$tran/10]
   avg=`grep "avg:" ./*.out -R | awk -F" " '{print $3}' | awk '{a+=$1}END{print a}'`
   res_avg=$[$avg/10]
 }
 
+do_collectinfo () {
+  read -p "input the platform information here ..." platform
+  read -p "input the size of system memory here ..." mem
+  read -p "input the information of CPU here ..." cpu
+}
 
 do_writedatabase() {
   # connect to the database and write the final data into database;
-  mysql -h $centric_db_host -u $centric_db_userame -p$centric_db_password -e "use workload; insert into bench_result(drivemodel, trans, avg, timestamp) values (\"$disk\", \"$res_tran\", \"$res_avg\", \"$timestamp\")"
+  mysql -h $centric_db_host -u $centric_db_userame -p$centric_db_password -e "use workload; insert into bench_result(drivemodel, Platform, trans, avg, timestamp, extra, memory, CPU, threads) values (\"$disk\", \"$platform\", \"$res_tran\", \"$res_avg\", \"$timestamp\", "", \"$mem\", \"$cpu\", \"$nthread\")"
 }
 
 do_cleanup
@@ -140,4 +155,5 @@ do_cleanup
 do_prepare
 do_sysbench
 do_analysis
+do_collectinfo
 do_writedatabase
