@@ -1,8 +1,8 @@
 configuration
 =============
-pool size: 2
-osd size: 3
-pg (pgp) num: 128
+pool size: 3
+osd size: 3*3
+pg (pgp) num: 300
 osd nodes are separated across two different nodes
 rbd image size: 10G (10240M)
 

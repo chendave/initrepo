@@ -1,0 +1,17 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: httpd
+spec:
+  revisionHistoryLimit: 10
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        run: httpd
+    spec:
+      containers:
+      - name: httpd
+        image: httpd:2.4.18
+        ports:
+        - containerPort: 80
