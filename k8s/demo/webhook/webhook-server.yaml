@@ -1,0 +1,68 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: sample-webhook
+    webhook: "true"
+  name: sample-webhook-deployment
+  namespace: e2e-tests-webhook-gbgt6
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sample-webhook
+      webhook: "true"
+  template:
+    metadata:
+      labels:
+        app: sample-webhook
+        webhook: "true"
+    spec:
+      containers:
+      - args:
+        - --tls-cert-file=/webhook.local.config/certificates/tls.crt
+        - --tls-private-key-file=/webhook.local.config/certificates/tls.key
+        - --alsologtostderr
+        - -v=4
+        - 2>&1
+        #image: gcr.io/kubernetes-e2e-test-images/k8s-sample-admission-webhook-amd64:1.10v2
+        image: jungler/webhook-amd64:1.14v1
+        imagePullPolicy: IfNotPresent
+        name: sample-webhook
+        volumeMounts:
+        - mountPath: /webhook.local.config/certificates
+          name: webhook-certs
+          readOnly: true
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: arch
+                operator: NotIn
+                values:
+                - arm64
+      volumes:
+      - name: webhook-certs
+        secret:
+          defaultMode: 420
+          secretName: sample-webhook-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    test: webhook
+  name: e2e-test-webhook
+  namespace: e2e-tests-webhook-gbgt6
+spec:
+  ports:
+  - port: 443
+    protocol: TCP
+    targetPort: 443
+    #nodePort: 32222
+  selector:
+    webhook: "true"
+  sessionAffinity: None
+  type: ClusterIP
+  #type: NodePort
