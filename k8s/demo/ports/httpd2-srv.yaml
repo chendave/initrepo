@@ -1,0 +1,35 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: httpd2
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        run: httpd2
+    spec:
+      containers:
+      - name: httpd2
+        image: httpd
+        ports:
+        - containerPort: 80
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpd2-svc
+spec:
+  selector:
+    run: httpd2
+  ports:
+  - protocol: TCP
+    port: 2222
+    targetPort: 80
+    nodePort: 32000
+  type: NodePort
+
+
+
