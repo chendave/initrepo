@@ -2,7 +2,7 @@ This directory contains all the files that are needed to validate the Kubernetes
 
 Concret steps are list below,
 
-- Build an image byself
+- Build an image for service by yourself.
 
 ```
 cd $GOPATH/src/k8s.io/kubernetes/test/images
@@ -25,7 +25,7 @@ The files will be generated in the temporary directory, for example, `/tmp/test-
 
 `gensecret.sh` is copied from [1], but it is lacking of self-signed CA cert.
 
-- Create a K8S tls secret based on the generated cert and key
+- Create a K8S tls secret based on the generated cert and key.
 
 ```
 kubectl create secret tls sample-webhook-secret --cert=/tmp/test-e2e-server-cert405184811/server.crt360522389 --key=/tmp/test-e2e-server-cert405184811/server.key791923952 --namespace=e2e-tests-webhook-gbgt6
@@ -45,19 +45,19 @@ cat server-cert.pem | base64 -w 0
 kubectl create -f webhook-config.yaml
 ```
 
-- Create a namespace
+- Create a namespace.
 
 ```bash
 kubectl create -f webhook-namespace.yaml
 ```
 
-- Create `e2e-test-webhook` service
+- Create `e2e-test-webhook` service.
 
 ```bash
 kubectl create -f webhook-server.yaml
 ```
 
-- Create a pod in the namespace and verify whether the initContainers is appended
+- Create a pod in the namespace and verify whether the initContainers is appended.
 
 ```bash
 kubectl create -f pod.yaml
@@ -89,10 +89,13 @@ metadata:
   startTime: "2019-07-07T04:12:48Z"
 ```
 
-*Note* webhook is an example from K8S's code base, you can get the details for how to run it as with code from ehere[3]
+**Note** webhook is an example from K8S's code base, you can get the details for how to run it as with code from here[3]
 
 
-reference:
+Reference:
+---------
 [1] https://github.com/morvencao/kube-mutating-webhook-tutorial/blob/master/deployment/webhook-create-signed-cert.sh
+
 [2] https://juejin.im/post/5ba3547ae51d450e425ec6a5 (A blog written in Chinese)
+
 [3] https://github.com/kubernetes/kubernetes/tree/master/test/e2e/apimachinery
