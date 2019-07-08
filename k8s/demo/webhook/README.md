@@ -23,7 +23,8 @@ go run certs.go
 
 The files will be generated in the temporary directory, for example, `/tmp/test-e2e-server-cert870905509`
 
-`gensecret.sh` is copied from [1], but it is lacking of self-signed CA cert.
+`gensecret.sh` is copied from [1], but it is lacking of self-signed CA cert, if go this approach, you need to
+replace the `caBundle` (mentioned below) with the CA cert defined in the `/etc/kubernetes/kubelet.conf`.
 
 - Create a K8S tls secret based on the generated cert and key.
 
