@@ -1,4 +1,4 @@
-.PHONY: test-chain
+.PHONY: test-e2e
 test-e2e: ginkgo generated_files
 	go run test.go
 
