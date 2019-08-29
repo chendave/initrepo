@@ -37,13 +37,13 @@ As an example, do it as this,
 
 ```bash
 cd /tmp/test-e2e-server-cert870905509
-cat server-cert.pem | base64 -w 0
+cat ca.crt723593152 | base64 -w 0
 ```
 
 - Create `MutatingWebhookConfiguration`, replace `caBundle` with the output from last step.
 
 ```bash
-kubectl create -f webhook-config.yaml
+kubectl create -f webhook-config-mutate.yaml (webhook-config-validation.yaml)
 ```
 
 - Create a namespace.
@@ -61,7 +61,7 @@ kubectl create -f webhook-server.yaml
 - Create a pod in the namespace and verify whether the initContainers is appended.
 
 ```bash
-kubectl create -f pod.yaml
+kubectl create -f pod.yaml (podValidation.yaml)
 kubectl get pod webhook-to-be-mutated -n e2e-tests-webhook-gbgt6 -o yaml
 
 apiVersion: v1

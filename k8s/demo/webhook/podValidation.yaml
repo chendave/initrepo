@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webhook-to-be-mutated
+  namespace: e2e-tests-webhook-gbgt6
+  labels:
+    webhook-e2e-test: webhook-disallow
+spec:
+  containers:
+  - image: k8s.gcr.io/pause:3.1
+    name: webhook-disallow
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: arch
+            operator: NotIn
+            values:
+            - arm64
+
