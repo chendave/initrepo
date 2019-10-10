@@ -4,6 +4,8 @@ arch:
   - amd64
   - arm64
 
+os: linux
+
 jobs:
   include:
     - stage: "test travis"
