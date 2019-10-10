@@ -1,0 +1,13 @@
+language: go
+
+arch:
+  - amd64
+  - arm64
+
+os: linux
+
+jobs:
+  include:
+    - stage: "test travis"
+      script: make initial 
+      name: "check if travis works for me"

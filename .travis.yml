@@ -1,13 +1,14 @@
-language: go
+language: c
 
 arch:
   - amd64
   - arm64
 
-os: linux
+compiler:
+  - gcc
 
-jobs:
-  include:
-    - stage: "test travis"
-      script: make initial 
-      name: "check if travis works for me"
+install: skip
+
+script:
+  - cd csource 
+  - make all
