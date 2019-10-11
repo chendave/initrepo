@@ -6,10 +6,10 @@ arch:
 
 os: linux
 
-install: skip
+install: true
 
 jobs:
   include:
     - stage: "test travis"
       script: make initial 
-      name: "check if travis works for me"
+      name: "check if travis works for me!"
