@@ -1,0 +1,8 @@
+Here is the issue when compiling the edgecore with go1.13
+
+> go: k8s.io/apimachinery@v0.0.0-20190612165923-1799e75a0719: invalid pseudo-version: does not match version-control timestamp (2019-06-12T20:58:21Z)
+
+How to fix it?
+
+- apply the patch `go.mod.patch`
+- run go list -m all
