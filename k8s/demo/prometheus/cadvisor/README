@@ -1,0 +1,12 @@
+run `docker-compose up` to start the services
+
+check the cadvisor: http://10.169.36.51:8080/docker/ (where all the docker image is listed there)
+check the prometheus based on the cadvisor and redis: http://10.169.36.51:9090/graph
+	- input the expression to check the different metrics, cgroup's CPU usage of redis in the
+          last minute for example.
+          rate(container_cpu_usage_seconds_total{name="redis"}[1m]).
+
+
+reference:
+[1] https://prometheus.io/docs/guides/cadvisor/
+[2] https://medium.com/@carlos.edamazio/container-monitoring-with-prometheus-and-cadvisor-684be5652b33
