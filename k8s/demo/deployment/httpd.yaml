@@ -1,9 +1,12 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: httpd
 spec:
-  replicas: 3
+  replicas: 2
+  selector:
+    matchLabels:
+      run: httpd
   template:
     metadata:
       labels:
