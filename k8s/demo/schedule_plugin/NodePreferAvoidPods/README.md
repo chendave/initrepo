@@ -46,7 +46,8 @@
   be less perferred.
 
 
+- `kube-scheduler.yaml` config the weight of plugin in the config file, it will override the default weight "10000" defined in source.
+
 
 Question:
 any other usecase? this doesn't look like a right process to use it.
-
