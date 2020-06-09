@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <testsuite name="ClusterLoaderV2" tests="1" failures="0" errors="0" time="149.381">
+      <testcase name="testing/node-throughput/config.yaml" classname="ClusterLoaderV2" time="149.381326704"></testcase>
+  </testsuite>
