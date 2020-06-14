@@ -1,0 +1,21 @@
+# pod won't be schedulered, since the label of "unknown" doesn't exist
+apiVersion: v1
+kind: Pod
+metadata:
+  name: with-pod3-affinity
+  labels:
+    security: S2
+spec:
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: security
+            operator: In
+            values:
+            - unknown
+        topologyKey: kubernetes.io/region
+  containers:
+  - name: with-pod3-affinity
+    image: k8s.gcr.io/pause:2.0

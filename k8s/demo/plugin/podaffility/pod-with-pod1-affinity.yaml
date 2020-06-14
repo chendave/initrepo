@@ -1,0 +1,23 @@
+# score map got will be 100
+apiVersion: v1
+kind: Pod
+metadata:
+  name: with-pod1-affinity
+  labels:
+    security: S2
+spec:
+  affinity:
+    podAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: security
+              operator: In
+              values:
+              - S2
+          topologyKey: kubernetes.io/region
+  containers:
+  - name: with-pod1-affinity
+    image: k8s.gcr.io/pause:2.0
