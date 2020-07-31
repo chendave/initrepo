@@ -1,6 +1,5 @@
 Here is the way to make the preemptor pod pending or preempt the low priority pods on nodes when scheduling due to the `PodTopologySpread`:
 
-scenario:
 I have two nodes:
 - node2: slave
 - node1: master
@@ -20,7 +19,8 @@ step2:
 ```
 
 Suppose the spreading looks like this:
-node2:2, node1:1
+`node2:2, node1:1`
+
 This is corresponding to the constraints of (matchLabels and matchExpressions: name).
 
 step3:
@@ -28,7 +28,7 @@ step3:
 - kubectl create -f pod1.yaml
 - kubectl create -f pod2.yaml
 ```
-Enforce the pod to be scheduled to a specific node (node1:2), create two pods here, this is corresponding to the constraints (matchExpressions: name)
+Enforce the pod to be scheduled to a specific node (`node1:2`), create two pods here, this is corresponding to the constraints (matchExpressions: name)
 
 Until we see something like this, 
 ```
@@ -39,10 +39,12 @@ exist2                   1/1     Running   0          7d21h   10.32.0.6   node2 
 
 
 The overall topology now is:
+```
 topologyKey: kubernetes.io/region1 -
 constraints1(matchLabels): node2:2, node1:1 (node1 is selected for the preemptor pod)
 topologyKey: kubernetes.io/region2 -
 constraints2(matchExpressions): node2:2, node1:3 (node2 is selected for the preemptor pod)
+```
 
 Final layout is:
 ```
