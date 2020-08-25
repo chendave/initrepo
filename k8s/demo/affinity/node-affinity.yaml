@@ -3,7 +3,6 @@ kind: Pod
 metadata:
   name: with-node-affinity
 spec:
-  # replicas: 3
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
