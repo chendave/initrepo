@@ -34,7 +34,7 @@ Until we see something like this,
 ```
 NAME                     READY   STATUS    RESTARTS   AGE     IP          NODE           NOMINATED NODE   READINESS GATES
 exist1                   1/1     Running   0          22d     10.32.0.4   node1          <none>           <none>
-exist2                   1/1     Running   0          7d21h   10.32.0.6   node2          <none>           <none>
+exist2                   1/1     Running   0          7d21h   10.32.0.6   node1         <none>           <none>
 ```
 
 
