@@ -1,0 +1,10 @@
+diff --git a/build/deployment.yaml b/build/deployment.yaml
+index 80e2a2e0..9b16279a 100644
+--- a/build/deployment.yaml
++++ b/build/deployment.yaml
+@@ -19,4 +19,4 @@ spec:
+         image: nginx
+         ports:
+         - containerPort: 80
+-          hostPort: 80
++          hostPort: 8899

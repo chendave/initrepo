@@ -1,0 +1,24 @@
+19c19
+<     httpServer: https://10.169.214.119:10002
+---
+>     httpServer: https://10.169.212.218:10002
+24c24
+<       server: 10.169.214.119:10001
+---
+>       server: 10.169.212.218:10001
+30c30
+<     token: ""
+---
+>     token: 0c99a6e41638738b6b7f4812f3acebf0b98ad4f15d023f63c90669d6616eeda7.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDEyODI5MDd9.coT9K_NyI2Q9uRgY96R7KLDwlB7V9-nvKDJZ0KsZ3NU
+35c35
+<       server: 10.169.214.119:10000
+---
+>       server: 10.169.212.218:10000
+72c72
+<     interfaceName: eth0
+---
+>     interfaceName: eth1
+87c87
+<     mqttMode: 2
+---
+>     mqttMode: 1
