@@ -4,6 +4,13 @@ try those scripts for the installation of KubeEdge.
 This guide assume you have `Docker` pre-installed on both cloud and edge node, `kubelet` `kubeadm` `kubectl` pre-installed on cloud,
 or else, pls refer to [here](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/).
 
+- Configure no password ssh connection from cloud to edge,
+  ```bash
+  ssh-keygen
+  ```
+  Copy the `id_rsa.pub` to `authorized_keys` on the edge.
+
+
 - Create K8S cluster based on `kubeadm`,
   ```bash
   kubeadm init --pod-network-cidr=192.168.0.0/16
@@ -13,6 +20,7 @@ or else, pls refer to [here](https://kubernetes.io/docs/setup/production-environ
 
   kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
   ```
+
 - Copy the folder of "cloud" to somewhere on the cloud node
 
 - Copy the folder of "edge" to "/root/devsummit" on the edge node
