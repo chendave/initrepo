@@ -1,0 +1,15 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: preemptor
+  labels:
+    name: dave
+spec:
+  priorityClassName: system-cluster-critical
+  containers:
+  - name: pause
+    image: k8s.gcr.io/pause:3.1
+    resources:
+      requests:
+        memory: "10Mi"
+        cpu: "5000m"
