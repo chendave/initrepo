@@ -48,6 +48,5 @@ Events:                   <none>
 
 kubectl get pdb
 NAME       MIN AVAILABLE   MAX UNAVAILABLE   ALLOWED DISRUPTIONS   AGE
-test-pdb   3               N/A               1                     29m
-
+test-pdb   3               N/A               0                     36m
 ```
