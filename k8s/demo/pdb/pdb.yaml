@@ -1,0 +1,10 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: test-pdb
+spec:
+  #maxUnavailable: 1
+  minAvailable: 3
+  selector:
+    matchLabels:
+      name: hello
