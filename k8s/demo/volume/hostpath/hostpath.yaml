@@ -1,0 +1,25 @@
+# This example demonstrates that the directory on the host "/home/mount" will be mounted to container located at "/csi".
+# kubectl exec -it hostpath /bin/sh
+# cd /csi
+# ls
+# test (this is the file on your host)
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hostpath
+  labels:
+    name: hello
+spec:
+  containers:
+  - name: exist1
+    image: k8s.gcr.io/nginx
+    volumeMounts:
+    - mountPath: /csi
+      name: socket-dir
+
+  volumes:
+  - hostPath:
+      path: /home/mount
+      type: DirectoryOrCreate
+    name: socket-dir
