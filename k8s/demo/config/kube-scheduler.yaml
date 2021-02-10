@@ -1,4 +1,4 @@
-apiVersion: kubescheduler.config.k8s.io/v1alpha2
+apiVersion: kubescheduler.config.k8s.io/v1beta1
 bindTimeoutSeconds: 600
 clientConnection:
   acceptContentTypes: ""
@@ -6,7 +6,6 @@ clientConnection:
   contentType: application/vnd.kubernetes.protobuf
   kubeconfig: /etc/kubernetes/scheduler.conf
   qps: 50
-disablePreemption: false
 enableContentionProfiling: true
 enableProfiling: true
 extenders: null
