@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: initial
+  labels:
+    bar: dave
+spec:
+  containers:
+  - name:  initial
+    image: httpd
+  nodeSelector:
+    bar: "dave"

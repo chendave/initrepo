@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: affinity
+  labels:
+    bar: dave
+spec:
+  containers:
+  - name: affinity
+    image: httpd
