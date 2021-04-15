@@ -87,3 +87,12 @@ kubectl create -f pod2.yaml
 ```
 
 14. Check that the new file does't show in the new pod
+
+
+15. Try the inline ephemeral support
+
+Volume is specified directly inside a pod spec without the need to use a persistent volume object.
+
+```
+kubectl create -f pod-ephemeral.yaml
+```
