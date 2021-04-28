@@ -1,0 +1,39 @@
+# This Pod is an example to set the quota on the hugepages
+# Before start you need to config the hugepage on your nodes.
+# e.g.
+# echo "vm.nr_hugepages=512" >> /etc/sysctl.conf
+# sysctl -p
+# grep HugePages /proc/meminfo (check HugePages_Total)
+# systemctl restart kubelet
+# restart scheduler service
+# by default, if the request is omitted then the request is set to
+# limit.  
+
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: init-demo2
+  labels:
+    name: dave
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - mountPath: /hugepages
+      name: hugepage
+    resources:
+      requests:
+        memory: "10Mi"
+        cpu: "2000m"
+      limits:
+        hugepages-2Mi: 2Mi
+        memory: "64Mi"
+  volumes:
+  - name: hugepage
+    emptyDir:
+      medium: HugePages
