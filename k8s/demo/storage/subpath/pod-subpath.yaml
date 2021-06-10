@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-subpath-zltest
+spec:
+    containers:
+    - name: debian-subpath-container
+      image: debian:stable
+      volumeMounts:
+      - mountPath: /var/lib
+        name: subpath-vol
+        subPath: home
+      command:
+        - sleep
+        - infinity
+    - name: nginx-subpath-container
+      image: nginx
+      volumeMounts:
+      - mountPath: /var/www/nginx
+        name: subpath-vol
+        subPath: dir
+    volumes:
+    - name: subpath-vol
+      persistentVolumeClaim:
+        claimName: pvc-subpath
