@@ -1,7 +1,7 @@
 ! Configuration File for keepalived
 
 global_defs {
-   router_id dave-desktop
+   router_id master3
 }
 
 vrrp_script chk_haproxy {
@@ -10,14 +10,15 @@ vrrp_script chk_haproxy {
     weight 20 # 权重变化
 }
 
+
 vrrp_instance VI-kube-master {
-    state MASTER
-    interface eth0
+    state BACKUP
+    interface eno3
     virtual_router_id 50
-    priority 100
-    unicast_src_ip 10.169.180.51
-    unicast_peer {              
-        10.169.212.212      #对端ip
+    priority 80
+    unicast_src_ip 10.169.212.212
+    unicast_peer {
+        10.169.180.51
         10.169.182.17
     }
     advert_int 1
@@ -31,6 +32,6 @@ vrrp_instance VI-kube-master {
     }
 
     virtual_ipaddress {
-        10.169.180.90/22
+        10.169.180.90
     }
 }
