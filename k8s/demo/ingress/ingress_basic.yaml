@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-http
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+    - host: test.ingress.com
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: my-service
+              port:
+                number: 8889
+        - path: /foo
+          pathType: Prefix
+          backend:
+            service:
+              name: my-service
+              port:
+                number: 8889
