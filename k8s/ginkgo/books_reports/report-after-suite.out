@@ -1,0 +1,10 @@
+Books Suite - 1648202996
+1: [BeforeSuite] - passed
+is divisible by 3 - passed
+is NOT divisible by 3 - passed
+is divisible by 5 - passed
+is NOT divisible by 5 - passed
+is divisible by 3 and  5 - passed
+is NOT divisible by 3 or 5 - passed
+1: [DeferCleanup (Suite)] - passed
+1: [DeferCleanup (Suite)] - passed
