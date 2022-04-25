@@ -2,7 +2,7 @@
 
 sudo apt-get install vnc4server -y
 sudo apt-get install xfce4-session
-cat <<EOF >/.vnc/xstartup
+cat <<EOF >~/.vnc/xstartup
 #!/bin/sh
 
 # Uncomment the following two lines for normal desktop:
