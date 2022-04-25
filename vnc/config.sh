@@ -1,7 +1,11 @@
 #!/bin/bash
 
+# If terminal cannot be opened, just Press Alt+F2, and then enter "xterm" to get a
+# terminal
+
 sudo apt-get install vnc4server -y
 sudo apt-get install xfce4-session
+sudo apt-get install xfce4-appfinder -y
 cat <<EOF >~/.vnc/xstartup
 #!/bin/sh
 
