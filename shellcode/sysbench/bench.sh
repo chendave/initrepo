@@ -4,30 +4,35 @@
 # Author: Dave Chen                            #
 # Mail: dave.jungler@gmail.com                 #
 #                                              #
-# MySQL/Sysbench Performance Testing Script   #
-# Optimized version with improved error        #
-# handling and security                        #
+# MySQL Sysbench Performance Testing Script   #
+# Optimized version with improved security     #
+# and error handling                           #
 ################################################
 
 set -euo pipefail  # Improved error handling
 
 # Configuration variables
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly LOG_FILE="/tmp/sysbench_$(date +%Y%m%d_%H%M%S).log"
+DISK=""
+USERNAME="root"
+PASSWORD=""
+RAW_DEVICE=""
+NTHREAD=""
+RESULT_FOLDER=""
+CENTRIC_DB_HOST="${CENTRIC_DB_HOST:-192.168.20.169}"
+CENTRIC_DB_USERNAME="${CENTRIC_DB_USERNAME:-root}"
+CENTRIC_DB_PASSWORD="${CENTRIC_DB_PASSWORD:-}"
+TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+MYSQL_DATABASE="dbtest"
+SYSBENCH_TABLE_SIZE=10000
+BENCHMARK_ITERATIONS=10
+LOG_FILE="/tmp/sysbench_${TIMESTAMP}.log"
 
-# Default values
-disk=""
-username="root"
-password=""
-nthread=""
-raw=""
-tran=""
-avg=""
-centric_db_host="${DB_HOST:-192.168.20.169}"
-centric_db_username="${DB_USERNAME:-root}"
-centric_db_password="${DB_PASSWORD:-}"
-timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
-result_base_dir="${RESULT_DIR:-/home/dave/result}"
+# Device mapping
+declare -A DEVICE_MAP=(
+    ["P4510"]="/dev/nvme0n1"
+    ["P4500"]="/dev/nvme1n1" 
+    ["S4500"]="/dev/sdb"
+)
 
 # Logging function
 log() {
@@ -36,63 +41,73 @@ log() {
 
 # Error handling function
 error_exit() {
-    log "ERROR: $1"
+    echo "ERROR: $*" >&2
     exit 1
 }
 
-# Usage function
+# Function to display usage information
 show_usage() {
     cat << EOF
-Usage: $0 [OPTIONS]
+Usage: $0 -d DISK_TYPE -t THREADS -u USERNAME -p PASSWORD [OPTIONS]
 
-OPTIONS:
-    -d DISK     Disk type [S4500, P4500, P4510] (required)
-    -t THREADS  Number of threads [1, 2, 4, 8, 16] (required)
-    -u USER     Database username (default: root)
-    -p PASS     Database password (will prompt if not provided)
-    -h          Show this help message
+Required Parameters:
+  -d DISK_TYPE     Disk type: S4500, P4500, or P4510
+  -t THREADS       Number of threads: 1, 2, 4, 8, 12, 16
+  -u USERNAME      MySQL username
+  -p PASSWORD      MySQL password
 
-ENVIRONMENT VARIABLES:
-    DB_HOST         Database host (default: 192.168.20.169)
-    DB_USERNAME     Database username (default: root)
-    DB_PASSWORD     Database password
-    RESULT_DIR      Results directory (default: /home/dave/result)
+Optional Parameters:
+  -h               Show this help message
+  --db-host HOST   Database host (default: $CENTRIC_DB_HOST)
+  --db-user USER   Database username (default: $CENTRIC_DB_USERNAME)
 
-EXAMPLES:
-    $0 -d P4500 -t 4
-    $0 -d S4500 -t 8 -u testuser -p testpass
+Examples:
+  $0 -d P4500 -t 4 -u root -p mypassword
+  $0 -d S4500 -t 8 -u testuser -p testpass --db-host 192.168.1.100
+
 EOF
 }
 
-# Validate parameters
-validate_params() {
-    if [[ -z "$disk" ]]; then
-        error_exit "Disk type is required. Use -d option."
+# Function to validate parameters
+validate_parameters() {
+    local errors=0
+    
+    if [[ -z "$DISK" ]]; then
+        echo "Error: Disk type (-d) is required" >&2
+        errors=1
+    elif [[ ! "${DEVICE_MAP[$DISK]+isset}" ]]; then
+        echo "Error: Invalid disk type '$DISK'. Valid options: ${!DEVICE_MAP[*]}" >&2
+        errors=1
     fi
     
-    if [[ -z "$nthread" ]]; then
-        error_exit "Number of threads is required. Use -t option."
+    if [[ -z "$NTHREAD" ]]; then
+        echo "Error: Number of threads (-t) is required" >&2
+        errors=1
+    elif ! [[ "$NTHREAD" =~ ^[0-9]+$ ]] || [[ "$NTHREAD" -lt 1 ]] || [[ "$NTHREAD" -gt 32 ]]; then
+        echo "Error: Invalid thread count '$NTHREAD'. Must be a number between 1 and 32" >&2
+        errors=1
     fi
     
-    if [[ ! "$disk" =~ ^(S4500|P4500|P4510)$ ]]; then
-        error_exit "Invalid disk type: $disk. Must be S4500, P4500, or P4510."
+    if [[ -z "$USERNAME" ]]; then
+        echo "Error: MySQL username (-u) is required" >&2
+        errors=1
     fi
     
-    if [[ ! "$nthread" =~ ^[0-9]+$ ]] || [[ "$nthread" -lt 1 ]] || [[ "$nthread" -gt 32 ]]; then
-        error_exit "Invalid thread count: $nthread. Must be a number between 1 and 32."
+    if [[ -z "$PASSWORD" ]]; then
+        echo "Error: MySQL password (-p) is required" >&2
+        errors=1
     fi
     
-    if [[ -z "$password" ]]; then
-        read -s -p "Enter database password: " password
-        echo
-        if [[ -z "$password" ]]; then
-            error_exit "Password cannot be empty."
-        fi
+    if [[ $errors -eq 1 ]]; then
+        echo ""
+        show_usage
+        exit 1
     fi
 }
 
 # Parse command line arguments
 if [[ $# -eq 0 ]]; then
+    echo "Error: No parameters provided"
     show_usage
     exit 1
 fi
@@ -104,193 +119,284 @@ while [[ $# -gt 0 ]]; do
             exit 0
             ;;
         -d)
-            [[ -n "${2:-}" ]] || error_exit "Option -d requires an argument"
-            disk="$2"
-            shift 2
+            if [[ -n "${2:-}" ]]; then
+                DISK="$2"
+                shift 2
+            else
+                echo "Error: -d requires a disk type argument" >&2
+                exit 1
+            fi
             ;;
         -t)
-            [[ -n "${2:-}" ]] || error_exit "Option -t requires an argument"
-            nthread="$2"
-            shift 2
+            if [[ -n "${2:-}" ]]; then
+                NTHREAD="$2"
+                shift 2
+            else
+                echo "Error: -t requires a thread count argument" >&2
+                exit 1
+            fi
             ;;
         -u)
-            [[ -n "${2:-}" ]] || error_exit "Option -u requires an argument"
-            username="$2"
-            shift 2
+            if [[ -n "${2:-}" ]]; then
+                USERNAME="$2"
+                shift 2
+            else
+                echo "Error: -u requires a username argument" >&2
+                exit 1
+            fi
             ;;
         -p)
-            [[ -n "${2:-}" ]] || error_exit "Option -p requires an argument"
-            password="$2"
-            shift 2
+            if [[ -n "${2:-}" ]]; then
+                PASSWORD="$2"
+                shift 2
+            else
+                echo "Error: -p requires a password argument" >&2
+                exit 1
+            fi
+            ;;
+        --db-host)
+            if [[ -n "${2:-}" ]]; then
+                CENTRIC_DB_HOST="$2"
+                shift 2
+            else
+                echo "Error: --db-host requires a hostname argument" >&2
+                exit 1
+            fi
+            ;;
+        --db-user)
+            if [[ -n "${2:-}" ]]; then
+                CENTRIC_DB_USERNAME="$2"
+                shift 2
+            else
+                echo "Error: --db-user requires a username argument" >&2
+                exit 1
+            fi
             ;;
         *)
-            error_exit "Unknown option: $1. Use -h for help."
+            echo "Error: Unknown option '$1'" >&2
+            show_usage
+            exit 1
             ;;
     esac
 done
 
-# Validate all parameters
-validate_params
+# Validate all required parameters
+validate_parameters
 
-log "Starting sysbench test with disk=$disk, threads=$nthread"
+# Set derived variables
+RAW_DEVICE="${DEVICE_MAP[$DISK]}"
+RESULT_FOLDER="/home/dave/result/$DISK"
 
-# Device mapping with validation
-get_device_path() {
-    local device_path=""
-    case "$disk" in
-        P4510)
-            device_path="/dev/nvme0n1"
-            ;;
-        P4500)
-            device_path="/dev/nvme1n1"
-            ;;
-        S4500)
-            device_path="/dev/sdb"
-            ;;
-        *)
-            error_exit "Unknown disk type: $disk"
-            ;;
-    esac
+# Function to install dependencies
+install_dependencies() {
+    log "Installing required dependencies..."
     
-    if [[ ! -b "$device_path" ]]; then
-        error_exit "Device $device_path does not exist or is not a block device"
+    # Update package list
+    if ! sudo apt-get update; then
+        error_exit "Failed to update package list"
     fi
     
-    echo "$device_path"
-}
-
-# Install dependencies
-do_deps() {
-    log "Installing dependencies..."
+    # Install MySQL server
     if ! command -v mysql &> /dev/null; then
-        sudo apt-get update
-        sudo DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-server
+        log "Installing MySQL server..."
+        if ! sudo DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-server; then
+            error_exit "Failed to install MySQL server"
+        fi
+    else
+        log "MySQL server already installed"
     fi
     
+    # Install sysbench
     if ! command -v sysbench &> /dev/null; then
-        sudo apt-get install -y sysbench
+        log "Installing sysbench..."
+        if ! sudo apt-get install -y sysbench; then
+            error_exit "Failed to install sysbench"
+        fi
+    else
+        log "Sysbench already installed"
     fi
     
-    log "Dependencies installed successfully"
+    # Install bc for calculations
+    if ! command -v bc &> /dev/null; then
+        log "Installing bc calculator..."
+        if ! sudo apt-get install -y bc; then
+            error_exit "Failed to install bc"
+        fi
+    fi
+    
+    log "Dependencies installation completed"
 }
 
-# Prepare test environment
-do_prepare() {
-    log "Preparing test environment..."
+# Function to prepare the test environment
+prepare_environment() {
+    log "Preparing test environment for disk: $DISK"
     
-    raw=$(get_device_path)
-    folder="$result_base_dir/$disk"
+    # Check if device exists
+    if [[ ! -b "$RAW_DEVICE" ]]; then
+        error_exit "Device $RAW_DEVICE does not exist"
+    fi
     
     # Create result directory
-    mkdir -p "$folder"
-    
-    # Create mount point if it doesn't exist
-    sudo mkdir -p /var/lib/mysqldb
-    
-    # Check if device is already mounted
-    if mountpoint -q /var/lib/mysqldb; then
-        log "Unmounting existing mount at /var/lib/mysqldb"
-        sudo umount /var/lib/mysqldb
+    if [[ ! -d "$RESULT_FOLDER" ]]; then
+        log "Creating result directory: $RESULT_FOLDER"
+        if ! mkdir -p "$RESULT_FOLDER"; then
+            error_exit "Failed to create result directory"
+        fi
     fi
     
-    # Mount the device
-    log "Mounting $raw to /var/lib/mysqldb"
-    sudo mount -t ext4 "$raw" /var/lib/mysqldb
-    
-    # Backup and setup MySQL data
-    if [[ -d /var/lib/mysql ]]; then
-        log "Backing up MySQL data..."
-        sudo rm -rf /var/lib/mysqldb/*
-        sudo cp -r /var/lib/mysql/* /var/lib/mysqldb/
-        sudo chown -R mysql:mysql /var/lib/mysqldb
+    # Create MySQL data directory
+    local mysql_data_dir="/var/lib/mysqldb"
+    if [[ ! -d "$mysql_data_dir" ]]; then
+        log "Creating MySQL data directory: $mysql_data_dir"
+        if ! sudo mkdir -p "$mysql_data_dir"; then
+            error_exit "Failed to create MySQL data directory"
+        fi
     fi
     
-    # Clear caches for accurate benchmarking
-    log "Clearing system caches..."
-    sudo sync
-    echo 3 | sudo tee /proc/sys/vm/drop_caches > /dev/null
-    sudo swapoff -a 2>/dev/null || true
+    # Mount the test device
+    log "Mounting $RAW_DEVICE to $mysql_data_dir"
+    if ! sudo mount -t ext4 "$RAW_DEVICE" "$mysql_data_dir"; then
+        error_exit "Failed to mount $RAW_DEVICE"
+    fi
+    
+    # Backup and copy MySQL data
+    log "Setting up MySQL data directory"
+    if [[ -d "/var/lib/mysql" ]]; then
+        sudo rm -rf "${mysql_data_dir:?}"/*
+        if ! sudo cp -r /var/lib/mysql/* "$mysql_data_dir/"; then
+            error_exit "Failed to copy MySQL data"
+        fi
+        sudo chown -R mysql:mysql "$mysql_data_dir"
+    fi
+    
+    # Optimize system for benchmarking
+    log "Optimizing system for benchmarking"
+    sudo sh -c 'echo 3 > /proc/sys/vm/drop_caches' && sudo sync
+    sudo swapoff -a || true
     
     # Copy MySQL configuration
-    if [[ -f "$SCRIPT_DIR/my.cnf" ]]; then
-        sudo cp "$SCRIPT_DIR/my.cnf" /etc/mysql/
+    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    if [[ -f "$script_dir/my.cnf" ]]; then
+        log "Copying MySQL configuration"
+        if ! sudo cp "$script_dir/my.cnf" /etc/mysql/; then
+            error_exit "Failed to copy MySQL configuration"
+        fi
     fi
     
     # Start MySQL service
-    log "Starting MySQL service..."
-    sudo systemctl start mysql || sudo service mysql start
+    log "Starting MySQL service"
+    if ! sudo systemctl start mysql; then
+        error_exit "Failed to start MySQL service"
+    fi
+    
+    # Wait for MySQL to be ready
+    log "Waiting for MySQL to be ready..."
+    local max_attempts=30
+    local attempt=0
+    while ! mysqladmin ping -u"$USERNAME" -p"$PASSWORD" --silent 2>/dev/null; do
+        if [[ $attempt -ge $max_attempts ]]; then
+            error_exit "MySQL failed to start within expected time"
+        fi
+        sleep 2
+        ((attempt++))
+    done
     
     log "Environment preparation completed"
 }
 
-# Run sysbench tests
-do_sysbench() {
-    log "Running sysbench tests..."
+# Function to run sysbench tests
+run_sysbench() {
+    log "Running sysbench tests with $NTHREAD threads"
     
-    local test_folder="$folder/$nthread"
-    mkdir -p "$test_folder"
+    # Create thread-specific result directory
+    local thread_result_dir="$RESULT_FOLDER/$NTHREAD"
+    if [[ ! -d "$thread_result_dir" ]]; then
+        log "Creating thread result directory: $thread_result_dir"
+        if ! mkdir -p "$thread_result_dir"; then
+            error_exit "Failed to create thread result directory"
+        fi
+    fi
     
     # Create test database
-    log "Creating test database..."
-    mysql -u "$username" -p"$password" -e "DROP DATABASE IF EXISTS dbtest; CREATE DATABASE dbtest;" 2>/dev/null
+    log "Creating test database: $MYSQL_DATABASE"
+    if ! mysql -u"$USERNAME" -p"$PASSWORD" -e "CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE"; then
+        error_exit "Failed to create database $MYSQL_DATABASE"
+    fi
     
-    # Prepare sysbench data using modern syntax
-    log "Preparing sysbench data..."
-    sysbench oltp_read_write \
-        --table-size=10000 \
-        --mysql-db=dbtest \
-        --mysql-user="$username" \
-        --mysql-password="$password" \
-        prepare
+    # Prepare sysbench test data
+    log "Preparing sysbench test data (table size: $SYSBENCH_TABLE_SIZE)"
+    if ! sysbench oltp_read_write \
+        --table-size="$SYSBENCH_TABLE_SIZE" \
+        --mysql-db="$MYSQL_DATABASE" \
+        --mysql-user="$USERNAME" \
+        --mysql-password="$PASSWORD" \
+        prepare; then
+        error_exit "Failed to prepare sysbench test data"
+    fi
     
-    # Run benchmark tests
-    log "Running benchmark tests (10 iterations)..."
-    for j in $(seq 1 10); do
-        log "Running test iteration $j/$10"
-        sysbench oltp_read_write \
-            --table-size=10000 \
-            --threads="$nthread" \
-            --mysql-db=dbtest \
-            --mysql-user="$username" \
-            --mysql-password="$password" \
+    # Run benchmark iterations
+    log "Running $BENCHMARK_ITERATIONS benchmark iterations"
+    for iteration in $(seq 1 "$BENCHMARK_ITERATIONS"); do
+        log "Running iteration $iteration/$BENCHMARK_ITERATIONS"
+        
+        local output_file="$thread_result_dir/${iteration}.out"
+        if ! sysbench oltp_read_write \
+            --table-size="$SYSBENCH_TABLE_SIZE" \
+            --threads="$NTHREAD" \
+            --mysql-db="$MYSQL_DATABASE" \
+            --mysql-user="$USERNAME" \
+            --mysql-password="$PASSWORD" \
             --time=60 \
-            run | tee "$test_folder/$j.out"
+            --report-interval=10 \
+            run | tee "$output_file"; then
+            error_exit "Sysbench iteration $iteration failed"
+        fi
+        
+        log "Iteration $iteration completed, results saved to $output_file"
     done
     
     log "Sysbench tests completed"
 }
 
-# Cleanup function
-do_cleanup() {
-    log "Cleaning up..."
+# Function to cleanup test environment
+cleanup_environment() {
+    log "Cleaning up test environment"
     
-    # Cleanup sysbench data
-    sysbench oltp_read_write \
-        --mysql-db=dbtest \
-        --mysql-user="$username" \
-        --mysql-password="$password" \
-        cleanup 2>/dev/null || true
+    # Cleanup sysbench test data
+    if command -v sysbench &> /dev/null; then
+        sysbench oltp_read_write \
+            --mysql-db="$MYSQL_DATABASE" \
+            --mysql-user="$USERNAME" \
+            --mysql-password="$PASSWORD" \
+            cleanup 2>/dev/null || true
+    fi
     
     # Drop test database
-    mysql -u "$username" -p"$password" -e "DROP DATABASE IF EXISTS dbtest;" 2>/dev/null || true
+    if command -v mysql &> /dev/null; then
+        mysql -u"$USERNAME" -p"$PASSWORD" \
+            -e "DROP DATABASE IF EXISTS $MYSQL_DATABASE" 2>/dev/null || true
+    fi
     
     # Stop MySQL service
-    sudo systemctl stop mysql 2>/dev/null || sudo service mysql stop 2>/dev/null || true
+    sudo systemctl stop mysql 2>/dev/null || true
     
-    # Unmount device
+    # Unmount test device
     sudo umount /var/lib/mysqldb 2>/dev/null || true
     
     log "Cleanup completed"
 }
 
-# Analyze results
-do_analysis() {
-    log "Analyzing results..."
+# Function to analyze results
+analyze_results() {
+    log "Analyzing benchmark results"
     
-    local test_folder="$folder/$nthread"
-    cd "$test_folder"
+    local thread_result_dir="$RESULT_FOLDER/$NTHREAD"
+    if [[ ! -d "$thread_result_dir" ]]; then
+        error_exit "Results directory not found: $thread_result_dir"
+    fi
     
-    # Calculate average transactions per second
+    cd "$thread_result_dir"
+    
     local total_tps=0
     local total_latency=0
     local count=0
@@ -319,66 +425,57 @@ do_analysis() {
     fi
 }
 
-# Collect system information
-do_collectinfo() {
+# Function to collect system information
+collect_system_info() {
     log "Collecting system information..."
     
-    # Try to detect system info automatically
-    platform=$(dmidecode -s system-product-name 2>/dev/null || echo "Unknown")
-    mem=$(free -h | awk '/^Mem:/ {print $2}' || echo "Unknown")
-    cpu=$(lscpu | grep "Model name" | cut -d: -f2 | xargs || echo "Unknown")
+    read -p "Enter platform information: " platform
+    read -p "Enter system memory size (GB): " mem
+    read -p "Enter CPU information: " cpu
     
     log "Platform: $platform"
-    log "Memory: $mem"
+    log "Memory: $mem GB"
     log "CPU: $cpu"
-    
-    # Allow manual override if needed
-    read -p "Platform [$platform]: " input_platform
-    platform=${input_platform:-$platform}
-    
-    read -p "Memory [$mem]: " input_mem
-    mem=${input_mem:-$mem}
-    
-    read -p "CPU [$cpu]: " input_cpu
-    cpu=${input_cpu:-$cpu}
 }
 
-# Write results to database
-do_writedatabase() {
-    if [[ -z "$centric_db_password" ]]; then
-        log "No database password provided, skipping database write"
+# Function to write results to database
+write_to_database() {
+    if [[ -z "$CENTRIC_DB_PASSWORD" ]]; then
+        log "Database password not provided, skipping database write"
         return 0
     fi
     
     log "Writing results to database..."
     
-    mysql -h "$centric_db_host" \
-          -u "$centric_db_username" \
-          -p"$centric_db_password" \
+    if mysql -h "$CENTRIC_DB_HOST" \
+          -u "$CENTRIC_DB_USERNAME" \
+          -p"$CENTRIC_DB_PASSWORD" \
           -e "USE workload; 
               INSERT INTO bench_result(drivemodel, Platform, trans, avg, timestamp, extra, memory, CPU, threads) 
-              VALUES ('$disk', '$platform', '$res_tran', '$res_avg', '$timestamp', '', '$mem', '$cpu', '$nthread');" \
-    && log "Results written to database successfully" \
-    || log "Failed to write results to database"
+              VALUES ('$DISK', '$platform', '$res_tran', '$res_avg', '$TIMESTAMP', '', '$mem', '$cpu', '$NTHREAD');"; then
+        log "Results written to database successfully"
+    else
+        log "Failed to write results to database"
+    fi
 }
 
 # Trap to ensure cleanup on exit
-trap 'do_cleanup' EXIT
+trap 'cleanup_environment' EXIT
 
 # Main execution flow
 main() {
     log "=== Sysbench Performance Test Started ==="
-    log "Configuration: disk=$disk, threads=$nthread, user=$username"
+    log "Configuration: disk=$DISK, threads=$NTHREAD, user=$USERNAME"
     
-    do_deps
-    do_prepare
-    do_sysbench
-    do_analysis
-    do_collectinfo
-    do_writedatabase
+    install_dependencies
+    prepare_environment
+    run_sysbench
+    analyze_results
+    collect_system_info
+    write_to_database
     
     log "=== Sysbench Performance Test Completed ==="
-    log "Results saved in: $folder/$nthread"
+    log "Results saved in: $RESULT_FOLDER/$NTHREAD"
     log "Log file: $LOG_FILE"
 }
 
