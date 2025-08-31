@@ -1,11 +1,15 @@
 import os
 import torch
+import requests
+
+from bs4 import BeautifulSoup
 from typing import List, Dict, Any
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from langchain_community.llms.tongyi import Tongyi
 from langchain.chains.retrieval_qa.base import RetrievalQA
 from langchain_community.document_loaders import PyPDFLoader, TextLoader, DirectoryLoader
+from langchain_core.documents import Document
 from langchain_huggingface import HuggingFaceEmbeddings
 
 # 1. 配置阿里云Qwen API Key
@@ -27,18 +31,34 @@ def init_qwen_api_llm():
     return llm
 
 # 3. 文档处理和向量存储（与之前相同）
-def load_and_split_documents(data_dir: str = "docs") -> List[Dict[str, Any]]:
-    loaders = [
-        DirectoryLoader(data_dir, glob="**/*.txt", loader_cls=TextLoader),
-        DirectoryLoader(data_dir, glob="**/*.pdf", loader_cls=PyPDFLoader)
-    ]
+def load_and_split_documents(data_dir: str = "docs", urls: List[str] = None) -> List[Dict[str, Any]]:
     documents = []
-    for loader in loaders:
-        docs = loader.load()
-        for doc in docs:
-            # 确保每个文档有唯一标识
-            doc.metadata["document_id"] = os.path.basename(doc.metadata["source"])
-        documents.extend(loader.load())
+    if urls:
+        print(f"从多个URL加载文档: {urls}")
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+        }
+        for url in urls:
+            try:
+                response = requests.get(url, headers=headers)
+                response.raise_for_status()
+                text = response.text
+                doc = Document(page_content=text, metadata={"source": url, "document_id": url})
+                documents.append(doc)
+            except Exception as e:
+                print(f"加载 {url} 失败: {e}")
+    else:
+        loaders = [
+            DirectoryLoader(data_dir, glob="**/*.txt", loader_cls=TextLoader),
+            DirectoryLoader(data_dir, glob="**/*.pdf", loader_cls=PyPDFLoader)
+        ]
+        documents = []
+        for loader in loaders:
+            docs = loader.load()
+            for doc in docs:
+                # 确保每个文档有唯一标识
+                doc.metadata["document_id"] = os.path.basename(doc.metadata["source"])
+            documents.extend(loader.load())
     
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=500,
@@ -96,6 +116,30 @@ def build_rag_system_with_api(vector_store_path: str = "vector_store"):
     )
     return qa_chain
 
+# maybe the url with the prefix as: https://docs.python.org/3.12/library/
+def get_prefixed_urls(entry_url, prefix, limit=5):
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; ARM Mac OS X 14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
+    response = requests.get(entry_url, headers=headers)
+    response.raise_for_status()
+    soup = BeautifulSoup(response.text, "html.parser")
+    urls = set()
+    for a in soup.find_all("a", href=True):
+        href = a["href"]
+        # 统一拼接成绝对路径
+        if not href.startswith("http"):
+            # 处理相对路径
+            if href.startswith("/"):
+                href = "https://docs.python.org" + href
+            else:
+                href = entry_url + href
+        if href.startswith(prefix):
+            urls.add(href)
+        if len(urls) >= limit:
+            break
+    return list(urls)
+
 # 5. 主函数
 def main():
     data_directory = "docs"
@@ -104,7 +148,11 @@ def main():
     # 第一步：处理文档（只需一次）
     if not os.path.exists(vector_store_path):
         print("处理文档并创建向量存储...")
-        documents = load_and_split_documents(data_directory)
+        # 用法示例
+        entry_url = "https://docs.python.org/3.12/library/"
+        prefix = "https://docs.python.org/3.12/library/"
+        urls = get_prefixed_urls(entry_url, prefix, limit=5)
+        documents = load_and_split_documents(data_directory, urls=urls)
         create_vector_store(documents, vector_store_path)
     
     # 第二步：构建RAG系统
